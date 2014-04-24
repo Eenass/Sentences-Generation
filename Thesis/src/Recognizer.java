@@ -1,9 +1,9 @@
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +16,32 @@ import antlr.JavaParser;
 
 
 public class Recognizer {
-	static String time = Long.toString(System.currentTimeMillis());
-	static boolean results = new File("..\\Thesis\\src\\testResults\\" + time).mkdirs();
+	
+	static StringBuffer buffer = new StringBuffer();
+
 	public static void main (String[] args){
 		
 		System.out.println("Start program");
 		List<String> files = getFiles();
 		parseFiles(files);
+		printToFile(buffer);
 		System.out.println("Finish parsing");
+		
+	}
+
+	private static void printToFile(StringBuffer buffer2) {
+		String time = Long.toString(System.currentTimeMillis());
+		File file = new File("..\\Thesis\\src\\testResults\\" + time);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, true);
+			PrintWriter printer = new PrintWriter(fw);
+			printer.append(buffer);
+			printer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		
 	}
 
@@ -70,7 +88,7 @@ public class Recognizer {
 		JavaLexer lexer = new JavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		JavaParser parser = new JavaParser(tokens);
-		ParserRuleContext t = parser.compilationUnit();
+//		ParserRuleContext t = parser.compilationUnit();
 		reportResult(f, parser);
 		
 	}
@@ -80,14 +98,7 @@ public class Recognizer {
 		File f = new File(s);
 		String filename = f.getName().replace(".java", "");
 		String str = parser.getNumberOfSyntaxErrors() > 0? "No" : "Yes";
-		try {
-			File report = new File("..\\Thesis\\src\\testResults\\" + time +"\\"+ filename + ".txt" );
-			BufferedWriter output = new BufferedWriter(new FileWriter(report));
-			output.write(str);
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		buffer.append(filename + " " + str + "\n");
 	}
-
+	
 }
