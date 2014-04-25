@@ -5,8 +5,7 @@ public class Selectable extends Expression{
 	String selector;
 	Expression expr;
 	
-	public Selectable(String sel, Expression e)
-	{
+	public Selectable(String sel, Expression e){
 		this.selector = sel;
 		this.expr = e;
 	}

@@ -1,6 +1,6 @@
 package gtojava;
 
-public class ProductionRule extends ASTNode{
+public class ProductionRule{
 	
 	String label;
 	Nonterminal ruleName;
