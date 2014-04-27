@@ -465,10 +465,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitGrammarSpec(GrammarSpecContext ctx) {
 		Optional o = new Optional(new Terminal(ctx.DOC_COMMENT().getText()));
-		Nonterminal n1 = (Nonterminal) ctx.grammarType().accept(this);
-		Nonterminal n2 = (Nonterminal) ctx.id().accept(this);
+		Nonterminal n1 = new Nonterminal(ctx.grammarType().getText());
+		Nonterminal n2 = new Nonterminal(ctx.id().getText());
 		Terminal t1 = new Terminal(ctx.SEMI().getText());
-		Star s1 = (Star) ctx.prequelConstruct(0).accept(this);
+		Star s1 = new Star(ctx.prequelConstruct(0).accept(this));
 		Nonterminal n3 = (Nonterminal) ctx.rules().accept(this);
 		Star s2 = (Star) ctx.modeSpec(0).accept(this);
 		Terminal t2 = new Terminal(ctx.EOF().getText());

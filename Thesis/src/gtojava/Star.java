@@ -4,8 +4,7 @@ public class Star extends Expression{
 	
 	Expression expr;
 	
-	public Star(Expression e)
-	{
+	public Star(Expression e){
 		this.expr = e;
 	}
 
