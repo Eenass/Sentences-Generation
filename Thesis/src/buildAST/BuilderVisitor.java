@@ -103,10 +103,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.parserRuleSpec() != null){
-			n1 = (Nonterminal) ctx.parserRuleSpec().accept(this);
+			n1.setName(ctx.parserRuleSpec().getText());
 		}
 		if(ctx.lexerRule() != null){
-			n2 = (Nonterminal) ctx.lexerRule().accept(this);
+			n2.setName(ctx.lexerRule().getText());
 		}
 		Choice  choice = makeChoice(Arrays.asList(n1, n2));
 		return choice;
@@ -117,16 +117,16 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2, n3, n4;
 		n1 = n2 = n3 = n4 = new Nonterminal("");
 		if(ctx.range() != null){
-			n1 = (Nonterminal) ctx.range().accept(this);
+			n1.setName(ctx.range().getText());
 		}
 		if(ctx.terminal() != null){
-			n2 = (Nonterminal) ctx.terminal().accept(this);
+			n2.setName(ctx.terminal().getText());
 		}
 		if(ctx.ruleref() != null){
-			n3 = (Nonterminal) ctx.ruleref().accept(this);
+			n3.setName(ctx.ruleref().getText());
 		}
 		if(ctx.notSet() != null){
-			n4 = (Nonterminal) ctx.notSet().accept(this);
+			n4.setName(ctx.notSet().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.DOT() != null){
@@ -158,10 +158,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.setElement() != null){
-			n1 = (Nonterminal) ctx.setElement().accept(this);
+			n1.setName(ctx.setElement().getText());
 		}
 		if(ctx.blockSet() != null){
-			n2 = (Nonterminal) ctx.blockSet().accept(this);
+			n2.setName(ctx.blockSet().getText());
 		}
 		Sequence seq1 = makeSequence(Arrays.asList(t, n1));
 		Sequence seq2 = makeSequence(Arrays.asList(t, n2));
@@ -179,13 +179,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.lexerCommand(0) != null){
-			n1 = (Nonterminal) ctx.lexerCommand(0).accept(this);
+			n1.setName(ctx.lexerCommand(0).getText());
 		}
 		if(ctx.COMMA(0) != null){
 			t2.setTerminal(ctx.COMMA(0).getText());
 		}
 		if(ctx.lexerCommand(1) != null){
-			n2 = (Nonterminal) ctx.lexerCommand(1).accept(this);
+			n2.setName(ctx.lexerCommand(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(t1, n1, star));
@@ -197,14 +197,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.lexerAlt(0) != null){
-			n1 = (Nonterminal) ctx.lexerAlt(0).accept(this);
+			n1.setName(ctx.lexerAlt(0).getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.OR(0) != null){
 			t.setTerminal(ctx.OR(0).getText());
 		}
 		if(ctx.lexerAlt(1) != null){
-			n2 = (Nonterminal) ctx.lexerAlt(1).accept(this);
+			n2.setName(ctx.lexerAlt(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(n1, star));
@@ -236,14 +236,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.labeledAlt(0) != null){
-			n1 = (Nonterminal) ctx.labeledAlt(0).accept(this);
+			n1.setName(ctx.labeledAlt(0).getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.OR(0) != null){
 			t.setTerminal(ctx.OR(0).getText());
 		}
 		if(ctx.labeledAlt(1) != null){
-			n2 = (Nonterminal) ctx.labeledAlt(1).accept(this);
+			n2.setName(ctx.labeledAlt(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(n1, star));
@@ -277,13 +277,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2;
 		t1 = t2 = new Terminal("");
 		if(ctx.lexerCommandName() != null){
-			n1 = (Nonterminal) ctx.lexerCommandName().accept(this);
+			n1.setName(ctx.lexerCommandName().getText());
 		}
 		if(ctx.LPAREN() != null){
 			t1.setTerminal(ctx.LPAREN().getText());
 		}
 		if(ctx.lexerCommandExpr() != null){
-			n2 = (Nonterminal) ctx.lexerCommandExpr().accept(this);
+			n2.setName(ctx.lexerCommandExpr().getText());
 		}
 		if(ctx.RPAREN() != null){
 			t2.setTerminal(ctx.RPAREN().getText());
@@ -303,13 +303,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.THROWS().getText());
 		}
 		if(ctx.id(0) != null){
-			n1 = (Nonterminal) ctx.id(0).accept(this);
+			n1.setName(ctx.id(0).getText());
 		}
 		if(ctx.COMMA(0) != null){
 			t2 = new Terminal(ctx.COMMA(0).getText());
 		}
 		if(ctx.id(1) != null){
-			n2 = (Nonterminal) ctx.id(1).accept(this);
+			n2.setName(ctx.id(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(t1, n1, star));
@@ -340,14 +340,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.AT().getText());
 		}
 		if(ctx.actionScopeName() != null){
-			n1 = (Nonterminal) ctx.actionScopeName().accept(this);
+			n1.setName(ctx.actionScopeName().getText());
 		}
 		if(ctx.COLONCOLON() != null){
 			t2.setTerminal(ctx.COLONCOLON().getText());
 		}
 		Optional o = new Optional(makeSequence(Arrays.asList(n1, t2)));
 		if(ctx.id() != null){
-			n2 = (Nonterminal)ctx.id().accept(this);
+			n2.setName(ctx.id().getText());
 		}
 		if(ctx.ACTION() != null){
 			t3.setTerminal(ctx.ACTION().getText());
@@ -365,7 +365,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.id() != null){
-			n = (Nonterminal) ctx.id().accept(this);
+			n.setName(ctx.id().getText());
 		}
 		if(ctx.SEMI() != null){
 			t2.setTerminal(ctx.SEMI().getText());
@@ -392,14 +392,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.id() != null){
-			n1 = (Nonterminal) ctx.id().accept(this);
+			n1.setName(ctx.id().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.ASSIGN() != null){
 			t.setTerminal(ctx.ASSIGN().getText());
 		}
 		if(ctx.optionValue() != null){
-			n2 = (Nonterminal) ctx.optionValue().accept(this);
+			n2.setName(ctx.optionValue().getText());
 		}
 		Sequence sequence = makeSequence(Arrays.asList(n1, t, n2));
 		return sequence;
@@ -410,20 +410,20 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1 , n2, n3, n4;
 		n1 = n2 = n3 = n4 = new Nonterminal("");
 		if(ctx.labeledElement() != null){
-			n1 = (Nonterminal) ctx.labeledElement().accept(this);
+			n1.setName(ctx.labeledElement().getText());
 		}
 		if(ctx.ebnfSuffix() != null){
-			n2 = (Nonterminal) ctx.ebnfSuffix().accept(this);
+			n2.setName(ctx.ebnfSuffix().getText());
 		}	
 		Empty e = new Empty();
 		Choice ch = makeChoice(Arrays.asList(n2, e));
 		Sequence seq1 = makeSequence(Arrays.asList(n1, ch));
 		if(ctx.atom() != null){
-			n3 = (Nonterminal) ctx.atom().accept(this);
+			n3.setName(ctx.atom().getText());
 		}
 		Sequence seq2 = makeSequence(Arrays.asList(n3, ch));
 		if(ctx.ebnf() != null){
-			n4 = (Nonterminal) ctx.ebnf().accept(this);
+			n4.setName(ctx.ebnf().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.ACTION() != null){
@@ -448,13 +448,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.LT().getText());
 		}
 		if(ctx.elementOption(0) != null){
-			n1 = (Nonterminal) ctx.elementOption(0).accept(this);
+			n1.setName(ctx.elementOption(0).getText());
 		}
 		if(ctx.COMMA(0) != null){
 			t2.setTerminal(ctx.COMMA(0).getText());
 		}
 		if(ctx.elementOption(1) != null){
-			n2 = (Nonterminal) ctx.elementOption(1).accept(this);
+			n2.setName(ctx.elementOption(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		if(ctx.GT() != null){
@@ -469,7 +469,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2, n3;
 		n1 = n2 = n3 = new Nonterminal("");
 		if(ctx.labeledLexerElement() != null){
-			n1 = (Nonterminal) ctx.labeledLexerElement().accept(this);
+			n1.setName(ctx.labeledLexerElement().getText());
 		}
 		Optional o1, o2;
 		o1 = o2 = new Optional(new Empty());
@@ -478,11 +478,11 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Sequence seq1 = makeSequence(Arrays.asList(n1, o1));
 		if(ctx.lexerAtom() != null){
-			n2 = (Nonterminal) ctx.lexerAtom().accept(this);
+			n2.setName(ctx.lexerAtom().getText());
 		}
 		Sequence seq2 = makeSequence(Arrays.asList(n2, o1));
 		if(ctx.lexerBlock() != null){
-			n3 = (Nonterminal) ctx.lexerBlock().accept(this);
+			n3.setName(ctx.lexerBlock().getText());
 		}
 		Sequence seq3 = makeSequence(Arrays.asList(n3, o1));
 		Terminal t = new Terminal("");
@@ -534,13 +534,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t2.setTerminal(ctx.COLON().getText());
 		}
 		if(ctx.ruleBlock() != null){
-			n1 = (Nonterminal) ctx.ruleBlock().accept(this);
+			n1.setName(ctx.ruleBlock().getText());
 		}
 		if(ctx.SEMI() != null){
 			t3.setTerminal(ctx.SEMI().getText());
 		}
 		if(ctx.exceptionGroup() != null){
-			n2 = (Nonterminal) ctx.exceptionGroup().accept(this);
+			n2.setName(ctx.exceptionGroup().getText());
 		}
 		Sequence sequence = makeSequence(Arrays.asList(o1, o2, t1, o3, o4, o5, o6, star, t2, n1, t3, n2));
 		return sequence;
@@ -550,7 +550,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitAlternative(AlternativeContext ctx) {
 		Nonterminal n = new Nonterminal("");
 		if(ctx.elements() != null){
-			n = (Nonterminal) ctx.elements().accept(this);
+			n.setName(ctx.elements().getText());
 		}
 		Empty e = new Empty();
 		Choice choice = makeChoice(Arrays.asList(n, e));
@@ -585,7 +585,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.id() != null){
-			n = (Nonterminal) ctx.id().accept(this);
+			n.setName(ctx.id().getText());
 		}
 		if(ctx.ACTION() != null){
 			t2.setTerminal(ctx.ACTION().getText());
@@ -623,10 +623,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.optionsSpec() != null){
-			n1 = (Nonterminal) ctx.optionsSpec().accept(this);
+			n1.setName(ctx.optionsSpec().getText());
 		}
 		if(ctx.ruleAction() != null){
-			n2 = (Nonterminal) ctx.ruleAction().accept(this);
+			n2.setName(ctx.ruleAction().getText());
 		}
 		Choice choice = makeChoice(Arrays.asList(n1, n2));
 		return choice;
@@ -655,7 +655,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.lexerAltList() != null){
-			n = (Nonterminal) ctx.lexerAltList().accept(this);
+			n.setName(ctx.lexerAltList().getText());
 		}
 		if(ctx.RPAREN() != null){
 			t2.setTerminal(ctx.RPAREN().getText());
@@ -676,7 +676,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.range() != null){
-			n = (Nonterminal) ctx.range().accept(this);
+			n.setName(ctx.range().getText());
 		}
 		if(ctx.LEXER_CHAR_SET() != null){
 			t3.setTerminal(ctx.LEXER_CHAR_SET().getText());
@@ -695,13 +695,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.RPAREN().getText());
 		}
 		if(ctx.setElement(0) != null){
-			n1 = (Nonterminal) ctx.setElement(0).accept(this);
+			n1.setName(ctx.setElement(0).getText());
 		}
 		if(ctx.OR(0) != null){
 			t2.setTerminal(ctx.OR(0).getText());
 		}
 		if(ctx.setElement(1) != null){
-			n2 = (Nonterminal) ctx.setElement(1).accept(this);
+			n2.setName(ctx.setElement(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		if(ctx.RPAREN() != null){
@@ -717,7 +717,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2;
 		t1 = t2 = new Terminal("");
 		if(ctx.id() != null){
-			n = (Nonterminal) ctx.id().accept(this);
+			n.setName(ctx.id().getText());
 		}
 		if(ctx.LEXER() != null){
 			t1.setTerminal(ctx.LEXER().getText());
@@ -734,14 +734,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.alternative() != null){
-			n1 = (Nonterminal) ctx.alternative().accept(this);
+			n1.setName(ctx.alternative().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.POUND() != null){
 			t.setTerminal(ctx.POUND().getText());
 		}
 		if(ctx.id() != null){
-			n2 = (Nonterminal) ctx.id().accept(this);
+			n2.setName(ctx.id().getText());
 		}
 		Optional o = new Optional(makeSequence(Arrays.asList(t, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(n1, o));
@@ -755,16 +755,16 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2, t3;
 		t1 = t2 = t3 = new Terminal("");
 		if(ctx.range() != null){
-			n1 = (Nonterminal) ctx.range().accept(this);
+			n1.setName(ctx.range().getText());
 		}
 		if(ctx.terminal() != null){
-			n2 = (Nonterminal) ctx.terminal().accept(this); 
+			n2.setName(ctx.terminal().getText()); 
 		}
 		if(ctx.RULE_REF() != null){
 			t1.setTerminal(ctx.RULE_REF().getText());
 		}
 		if(ctx.notSet() != null){
-			n3 = (Nonterminal) ctx.notSet().accept(this);
+			n3.setName(ctx.notSet().getText());
 		}
 		if(ctx.LEXER_CHAR_SET() != null){
 			t2.setTerminal(ctx.LEXER_CHAR_SET().getText());
@@ -788,7 +788,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2;
 		t1 = t2 = new Terminal("");
 		if(ctx.id() != null){
-			n1 = (Nonterminal) ctx.id().accept(this);
+			n1.setName(ctx.id().getText());
 		}
 		if(ctx.ASSIGN() != null){
 			t1.setTerminal(ctx.ASSIGN().getText());
@@ -798,10 +798,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Choice ch1 = makeChoice(Arrays.asList(t1, t2));
 		if(ctx.atom() != null){
-			n2 = (Nonterminal) ctx.atom().accept(this);
+			n2.setName(ctx.atom().getText());
 		}
 		if(ctx.block() != null){
-			n3 = (Nonterminal) ctx.block().accept(this);
+			n3.setName(ctx.block().getText());
 		}
 		Choice ch2 = makeChoice(Arrays.asList(n2, n3));
 		Sequence sequence = makeSequence(Arrays.asList(n1, ch1, ch2));
@@ -846,7 +846,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			n1.setName(ctx.grammarType().getText());
 		}
 		if(ctx.id() != null){
-			n2= (Nonterminal) ctx.id().accept(this);
+			n2.setName(ctx.id().getText());
 		}
 		if(ctx.SEMI() != null){
 			t1.setTerminal(ctx.SEMI().getText());
@@ -855,7 +855,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			s1 = (Star) ctx.prequelConstruct(0).accept(this);
 		}	
 		if(ctx.rules() != null){
-			n3 = (Nonterminal) ctx.rules().accept(this);
+			n3.setName(ctx.rules().getText());
 		}
 		if(!(ctx.modeSpec().isEmpty())){
 			s2 = (Star) ctx.modeSpec(0).accept(this);
@@ -872,14 +872,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.id(0) != null){
-			n1 = (Nonterminal) ctx.id(0).accept(this);
+			n1.setName(ctx.id(0).getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.ASSIGN() != null){
 			t.setTerminal(ctx.ASSIGN().getText());
 		}
 		if(ctx.id(1) != null){
-			n2 = (Nonterminal) ctx.id(1).accept(this);
+			n2.setName(ctx.id(1).getText());
 		}
 		Sequence seq = makeSequence(Arrays.asList(n1, t, n2));
 		Choice choice = makeChoice(Arrays.asList(seq, n1));
@@ -916,7 +916,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitLexerCommandName(LexerCommandNameContext ctx) {
 		Nonterminal n = new Nonterminal("");
 		if(ctx.id() != null){
-			n = (Nonterminal) ctx.id().accept(this);
+			n.setName(ctx.id().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.MODE() != null){
@@ -948,7 +948,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		o2.setExpr(makeSequence(Arrays.asList(o1, star, t2)));
 		Nonterminal n = new Nonterminal("");
 		if(ctx.altList() != null){
-			n = (Nonterminal) ctx.altList().accept(this);
+			n.setName(ctx.altList().getText());
 		}
 		if(ctx.RPAREN() != null){
 			t3.setTerminal(ctx.RPAREN().getText());
@@ -977,7 +977,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.lexerRuleBlock() != null){
-			n = (Nonterminal) ctx.lexerRuleBlock().accept(this);
+			n.setName(ctx.lexerRuleBlock().getText());
 		}
 		if(ctx.SEMI() != null){
 			t3.setTerminal(ctx.SEMI().getText());
@@ -993,7 +993,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2, t3;
 		t1 = t2 = t3 = new Terminal("");
 		if(ctx.id() != null){
-			n1 = (Nonterminal) ctx.id().accept(this);
+			n1.setName(ctx.id().getText());
 		}
 		if(ctx.ASSIGN() != null){
 			t1.setTerminal(ctx.ASSIGN().getText());
@@ -1003,10 +1003,10 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Choice ch1 =  makeChoice(Arrays.asList(t1, t2));
 		if(ctx.lexerAtom() != null){
-			n2 = (Nonterminal) ctx.lexerAtom().accept(this);
+			n2.setName(ctx.lexerAtom().getText());
 		}
 		if(ctx.block() != null){
-			n3 = (Nonterminal) ctx.block().accept(this);
+			n3.setName(ctx.block().getText());
 		}
 		Choice ch2 =  makeChoice(Arrays.asList(n2, n3));
 		Sequence sequence = makeSequence(Arrays.asList(n1, ch1, ch2));
@@ -1023,13 +1023,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.IMPORT().getText());
 		}
 		if(ctx.delegateGrammar(0) != null){
-			n1 = (Nonterminal) ctx.delegateGrammar(0).accept(this);
+			n1.setName(ctx.delegateGrammar(0).getText());
 		}
 		if(ctx.COMMA(0) != null){
 			t2.setTerminal(ctx.COMMA(0).getText());
 		}
 		if(ctx.delegateGrammar(1) != null){
-			n2 = (Nonterminal) ctx.delegateGrammar(1).accept(this);
+			n2.setName(ctx.delegateGrammar(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		if(ctx.SEMI() != null){
@@ -1082,13 +1082,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2;
 		t1 = t2 = new Terminal("");
 		if(ctx.id(0) != null){
-			n1 = (Nonterminal) ctx.id(0).accept(this);
+			n1.setName(ctx.id(0).getText());
 		}
 		if(ctx.ASSIGN() != null){
 			t1.setTerminal(ctx.ASSIGN().getText());
 		}
 		if(ctx.id(1) != null){
-			n2 =  (Nonterminal) ctx.id(1).accept(this);
+			n2.setName(ctx.id(1).getText());
 		}
 		if(ctx.STRING_LITERAL() != null){
 			t2.setTerminal(ctx.STRING_LITERAL().getText());
@@ -1126,13 +1126,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			t1.setTerminal(ctx.TOKENS().getText());
 		}
 		if(ctx.id(0) != null){
-			n1 = (Nonterminal) ctx.id(0).accept(this);
+			n1.setName(ctx.id(0).getText());
 		}
 		if(ctx.COMMA(0) != null){
 			t2.setTerminal(ctx.COMMA(0).getText());
 		}
 		if(ctx.id(1) != null){
-			n2 = (Nonterminal) ctx.id(1).accept(this);
+			n2.setName(ctx.id(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t2, n2)));
 		Optional o = new Optional(new Empty());
@@ -1169,7 +1169,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		Nonterminal n = new Nonterminal("");
 		if(ctx.option(0) != null){
-			n = (Nonterminal) ctx.option(0).accept(this);
+			n.setName(ctx.option(0).getText());
 		}
 		if(ctx.SEMI(0) != null){
 			t2.setTerminal(ctx.SEMI(0).getText());
@@ -1187,16 +1187,16 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2, n3, n4;
 		n1 = n2 = n3 = n4 = new Nonterminal("");
 		if(ctx.optionsSpec() != null){
-			n1 = (Nonterminal) ctx.optionsSpec().accept(this);
+			n1.setName(ctx.optionsSpec().getText());
 		}
 		if(ctx.delegateGrammars() != null){ 
-			n2 = (Nonterminal) ctx.delegateGrammars().accept(this);		
+			n2.setName(ctx.delegateGrammars().getText());		
 		}
 		if(ctx.tokensSpec() != null){
-			n3 = (Nonterminal) ctx.tokensSpec().accept(this);
+			n3.setName(ctx.tokensSpec().getText());
 		}
 		if(ctx.action() != null){
-			n4 = (Nonterminal) ctx.action().accept(this);
+			n4.setName(ctx.action().getText());
 		}
 		Choice choice = makeChoice(Arrays.asList(n1, n2, n3, n4));
 		return choice;
@@ -1207,14 +1207,14 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n1, n2;
 		n1 = n2 = new Nonterminal("");
 		if(ctx.alternative(0) != null){
-			n1 = (Nonterminal) ctx.alternative(0).accept(this);
+			n1.setName(ctx.alternative(0).getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.OR(0) != null){
 			t.setTerminal(ctx.OR(0).getText());
 		}
 		if(ctx.alternative(1) != null){
-			n2 = (Nonterminal) ctx.alternative(1).accept(this);
+			n2.setName(ctx.alternative(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t, n2)));
 		Sequence sequence = makeSequence(Arrays.asList(n1, star));
@@ -1237,13 +1237,13 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1, t2, t3, t4;
 		t1 = t2 = t3 = t4 = new Terminal("");
 		if(ctx.id(0) != null){
-			n1 = (Nonterminal) ctx.id(0).accept(this);
+			n1.setName(ctx.id(0).getText());
 		}
 		if(ctx.DOT(0) != null){
 			t1.setTerminal(ctx.DOT(0).getText());
 		}
 		if(ctx.id(1) != null){
-			n2 = (Nonterminal) ctx.id(1).accept(this);
+			n2.setName(ctx.id(1).getText());
 		}
 		Star star = new Star(makeSequence(Arrays.asList(t1, n2)));
 		Sequence seq = makeSequence(Arrays.asList(n1, star));
@@ -1287,7 +1287,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitEbnf(EbnfContext ctx) {
 		Nonterminal n = new Nonterminal("");
 		if(ctx.block() != null){
-			n = (Nonterminal) ctx.block().accept(this);
+			n.setName(ctx.block().getText());
 		}
 		Optional o = new Optional(new Empty());
 		if(ctx.blockSuffix() != null){
@@ -1301,7 +1301,7 @@ public class BuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitLexerCommandExpr(LexerCommandExprContext ctx) {
 		Nonterminal n = new Nonterminal("");
 		if(ctx.id() != null){
-			n = (Nonterminal) ctx.id().accept(this);
+			n.setName(ctx.id().getText());
 		}
 		Terminal t = new Terminal("");
 		if(ctx.INT() != null){

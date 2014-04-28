@@ -19,6 +19,7 @@ public class ASTBuilder {
 	public ASTBuilder(String filePath) throws IOException {
 		InputStream inputstream = new FileInputStream(filePath);
 		ANTLRInputStream input = new ANTLRInputStream(inputstream);
+//		System.out.println("The input is \n" + input.toString());
 		ANTLRv4Lexer lexer = new ANTLRv4Lexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         parser = new ANTLRv4Parser(tokens);
