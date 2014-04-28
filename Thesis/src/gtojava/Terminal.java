@@ -17,4 +17,8 @@ public class Terminal extends Expression{
 		return terminal;
 	}
 
+	public void setTerminal(String terminal) {
+		this.terminal = terminal;
+	}
+
 }
