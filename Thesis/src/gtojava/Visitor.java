@@ -16,8 +16,6 @@ public interface Visitor<T> {
 
 	T visit(Empty empty);
 
-	T visit(Selectable selectable);
-
 	T visit(Choice choice);
 
 }

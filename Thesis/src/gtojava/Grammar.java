@@ -14,5 +14,9 @@ public class Grammar {
 	public List<ProductionRule> getGrammar() {
 		return grammar;
 	}
+	
+	public void addProductionRule(ProductionRule rule){
+		this.grammar.add(rule);
+	}
 
 }

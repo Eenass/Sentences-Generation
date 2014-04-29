@@ -3,6 +3,7 @@ package buildAST;
 import grammarParser.ANTLRv4Lexer;
 import grammarParser.ANTLRv4Parser;
 import gtojava.Expression;
+import gtojava.Grammar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,10 +26,12 @@ public class ASTBuilder {
         parser = new ANTLRv4Parser(tokens);
 	}
 
-	public Expression buildGrammar(){
+	public Grammar buildGrammar(){
 		ParseTree tree = parser.grammarSpec();
-		BuilderVisitor astBuilder = new BuilderVisitor();
-		return tree.accept(astBuilder);
+//		BuilderVisitor astBuilder = new BuilderVisitor();
+		ASTBuilderVisitor astBuilder = new ASTBuilderVisitor();
+		tree.accept(astBuilder);
+		return astBuilder.getGrammar();
 	}
 	
 	public ANTLRv4Parser getParser() {

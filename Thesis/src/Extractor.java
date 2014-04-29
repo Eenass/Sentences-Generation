@@ -1,3 +1,6 @@
+import gtojava.Grammar;
+import gtojava.ProductionRule;
+
 import java.io.IOException;
 
 import buildAST.ASTBuilder;
@@ -10,7 +13,12 @@ public class Extractor {
 		 String filePath = "..\\Thesis\\src\\antlr\\Java.g4";
 		 ASTBuilder astbuilder = new ASTBuilder(filePath);
 		 ASTPrinter printer = new ASTPrinter();
-		 astbuilder.buildGrammar().accept(printer);
+//		 String accept = astbuilder.buildGrammar().accept(printer);
+		 Grammar grammar = astbuilder.buildGrammar();
+		 System.out.println("print results");
+		 for(ProductionRule rule: grammar.getGrammar()){
+			 System.out.println(rule.getRuleName().accept(printer));
+		 }
 	}	 		
 
 }

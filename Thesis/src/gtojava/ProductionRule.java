@@ -2,13 +2,20 @@ package gtojava;
 
 public class ProductionRule{
 	
-	String label;
 	Nonterminal ruleName;
 	Expression expr;
 	
-	public ProductionRule(String label, Nonterminal ruleName, Expression expr){
-		this.label = label;
+	public ProductionRule(Nonterminal ruleName, Expression expr){
 		this.ruleName = ruleName;
 		this.expr = expr;
 	}
+	
+	public Nonterminal getRuleName() {
+		return ruleName;
+	}
+
+	public Expression getExpr() {
+		return expr;
+	}
+
 }

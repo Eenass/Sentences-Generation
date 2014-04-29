@@ -24,10 +24,10 @@ public class Sequence extends Expression{
 		return sequence;
 	}
 	
-	public void addExpr(Expression e)
-	{
+	public void addExpr(Expression e){
 		this.sequence.add(e);
 	}
 	
 
 }
+
