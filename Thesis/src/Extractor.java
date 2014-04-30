@@ -13,11 +13,10 @@ public class Extractor {
 		 String filePath = "..\\Thesis\\src\\antlr\\Java.g4";
 		 ASTBuilder astbuilder = new ASTBuilder(filePath);
 		 ASTPrinter printer = new ASTPrinter();
-//		 String accept = astbuilder.buildGrammar().accept(printer);
 		 Grammar grammar = astbuilder.buildGrammar();
 		 System.out.println("print results");
 		 for(ProductionRule rule: grammar.getGrammar()){
-			 System.out.println(rule.getRuleName().accept(printer));
+			 System.out.println("\n"+rule.getRuleName().accept(printer) + "\n\t:\t" + rule.getExpr().accept(printer) + "\n\t;");
 		 }
 	}	 		
 

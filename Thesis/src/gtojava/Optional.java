@@ -4,6 +4,9 @@ public class Optional extends Expression{
 
 	Expression expr;
 	
+	public Optional(){
+	}
+	
 	public Optional(Expression e){
 		this.expr = e;
 	}

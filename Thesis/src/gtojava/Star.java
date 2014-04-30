@@ -8,6 +8,9 @@ public class Star extends Expression{
 		this.expr = e;
 	}
 	
+	public Star() {
+	}
+
 	public Expression getExpr() {
 		return expr;
 	}
