@@ -45,7 +45,25 @@ public class ASTPrinter implements Visitor<String>{
 	public String visit(Sequence sequence) {
 		String str = "";
 		for(Expression exp: sequence.getSequence()){
-			str += exp.accept(this) + " ";
+			if(exp instanceof Choice){
+				str += visitInnerChoice((Choice) exp);
+			}
+			else{
+				str += exp.accept(this) + " ";
+			}
+		}
+		return str;
+	}
+
+	private String visitInnerChoice(Choice choice) {
+		String str = "";
+		for(Expression exp: choice.getChoices()){
+			if(choice.getChoices().indexOf(exp) != choice.getChoices().size() - 1){
+				str += exp.accept(this) + "|";
+			}
+			else{
+				str += exp.accept(this);
+			}
 		}
 		return str;
 	}
@@ -63,7 +81,7 @@ public class ASTPrinter implements Visitor<String>{
 				str += exp.accept(this) + "\n\t|\t";
 			}
 			else{
-				str += exp.accept(this);
+				str += exp.accept(this) + " ";
 			}
 		}
 		return str;

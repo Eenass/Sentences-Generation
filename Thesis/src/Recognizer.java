@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
 
-import antlr.JavaLexer;
 import antlr.JavaParser;
+import extractedGrammar.ExtractedJavaLexer;
+import extractedGrammar.ExtractedJavaParser;
 
 
 public class Recognizer {
@@ -85,15 +85,16 @@ public class Recognizer {
 	private static void parseFile(String f) throws FileNotFoundException, IOException {
 		
 		ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(f));	
-		JavaLexer lexer = new JavaLexer(input);
+//		JavaLexer lexer = new JavaLexer(input);
+		ExtractedJavaLexer lexer = new ExtractedJavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		JavaParser parser = new JavaParser(tokens);
+		ExtractedJavaParser parser = new ExtractedJavaParser(tokens);
 //		ParserRuleContext t = parser.compilationUnit();
 		reportResult(f, parser);
 		
 	}
 
-	private static void reportResult(String s, JavaParser parser) {
+	private static void reportResult(String s, ExtractedJavaParser parser) {
 		
 		File f = new File(s);
 		String filename = f.getName().replace(".java", "");
