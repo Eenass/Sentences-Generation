@@ -43,6 +43,7 @@ import gtojava.Plus;
 import gtojava.ProductionRule;
 import gtojava.Sequence;
 import gtojava.Star;
+import gtojava.Terminal;
 
 public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
@@ -121,7 +122,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitElements(ElementsContext ctx) {
 		Sequence sequence = new Sequence();
 		Expression result = new Empty();
-		if(!(ctx.element().isEmpty()) && (ctx.element().size() > 1)){
+		if(ctx.element().size() > 1){
 			for(int i = 0; i < ctx.element().size(); i++){
 				sequence.addExpr(ctx.element(i).accept(this));
 			}
@@ -227,12 +228,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitRange(RangeContext ctx) {
 		Sequence sequence = new Sequence();
-		sequence.addExpr(new Nonterminal(ctx.STRING_LITERAL(0).getText()));
+		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(0).getText()));
 		sequence.addExpr(new Nonterminal(ctx.RANGE().getText())); 
-		sequence.addExpr(new Nonterminal(ctx.STRING_LITERAL(1).getText()));
-//		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(0).getText()));
-//		sequence.addExpr(new Nonterminal(ctx.RANGE().getText())); 
-//		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(1).getText()));
+		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(1).getText()));
 		return sequence;
 	}
 	
@@ -243,11 +241,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			result = new Nonterminal(ctx.TOKEN_REF().getText());
 		}
 		else if(ctx.STRING_LITERAL() != null){
-			result = new Nonterminal(ctx.STRING_LITERAL().getText());
+			result = new Terminal(ctx.STRING_LITERAL().getText());
 		}
-//		else if(ctx.STRING_LITERAL() != null){
-//			result = new Terminal(ctx.STRING_LITERAL().getText());
-//		}
 		return result;
 	}
 	
@@ -292,12 +287,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		if(ctx.TOKEN_REF() != null){
 			result = new Nonterminal(ctx.TOKEN_REF().getText());
 		}
-		else if(ctx.STRING_LITERAL() != null){
-			result = new Nonterminal(ctx.STRING_LITERAL().getText());
+		if(ctx.STRING_LITERAL() != null){
+			result = new Terminal(ctx.STRING_LITERAL().getText());
 		}
-//		if(ctx.STRING_LITERAL() != null){
-//			result = new Terminal(ctx.STRING_LITERAL().getText());
-//		}
 		else if(ctx.range() != null){
 			result = ctx.range().accept(this);
 		}

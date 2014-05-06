@@ -3,6 +3,7 @@ package testDataGeneration;
 import gtojava.Choice;
 import gtojava.Empty;
 import gtojava.Expression;
+import gtojava.GrammarMap;
 import gtojava.Nonterminal;
 import gtojava.Optional;
 import gtojava.Plus;
@@ -11,58 +12,60 @@ import gtojava.Star;
 import gtojava.Terminal;
 import gtojava.Visitor;
 
-public class TC implements Visitor<Expression>{
-
-	public TC() {
-		// TODO Auto-generated constructor stub
+public class TC implements Visitor<String>{
+	
+	private GrammarMap grammar;
+	
+	public TC(GrammarMap grammar) {
+		this.grammar = grammar;
+	}
+	
+	@Override
+	public String visit(Terminal terminal) {
+		return terminal.getTerminal();
 	}
 
 	@Override
-	public Expression visit(Terminal terminal) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Nonterminal nonterminal) {
+		if(nonterminal.getName().equals("EOF")){
+			System.out.println("yes");
+			return "";
+		}
+		return this.grammar.getExpression(nonterminal).accept(this);
 	}
 
 	@Override
-	public Expression visit(Nonterminal nonterminal) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Optional optional) {
+		return "";
 	}
 
 	@Override
-	public Expression visit(Optional optional) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Star star) {
+		return "";
 	}
 
 	@Override
-	public Expression visit(Star star) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Plus plus) {
+		return plus.getExpr().accept(this);
 	}
 
 	@Override
-	public Expression visit(Plus plus) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Sequence sequence) {
+		String str = "";
+		for(Expression exp : sequence.getSequence()){
+			str += exp.accept(this);
+		}
+		return str;
 	}
 
 	@Override
-	public Expression visit(Sequence sequence) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Empty empty) {
+		return "";
 	}
 
 	@Override
-	public Expression visit(Empty empty) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Expression visit(Choice choice) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Choice choice) {
+		return choice.getChoices().get(0).accept(this);
 	}
 
 }

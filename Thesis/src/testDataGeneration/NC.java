@@ -3,6 +3,7 @@ package testDataGeneration;
 import gtojava.Choice;
 import gtojava.Empty;
 import gtojava.Expression;
+import gtojava.GrammarMap;
 import gtojava.Nonterminal;
 import gtojava.Optional;
 import gtojava.Plus;
@@ -11,58 +12,111 @@ import gtojava.Star;
 import gtojava.Terminal;
 import gtojava.Visitor;
 
-public class NC implements Visitor<Expression>{
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-	public NC() {
-		// TODO Auto-generated constructor stub
+public class NC implements Visitor<String>{
+	
+	private GrammarMap grammar;
+	PredefinedLiterals literals = new PredefinedLiterals();
+	Map<Nonterminal, Integer> coverage = initializeCoverage();
+
+	public NC(GrammarMap grammar) {
+		this.grammar = grammar;
+	}
+	
+	private Map<Nonterminal, Integer> initializeCoverage(){
+		Map<Nonterminal, Integer> temp = new HashMap<Nonterminal, Integer>();
+		Set<Nonterminal> nonterminals = grammar.getNonterminals();
+		for(Nonterminal n : nonterminals){
+			temp.put(n, 0);
+		}
+		return temp;
 	}
 
 	@Override
-	public Expression visit(Terminal terminal) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Terminal terminal) {
+		return terminal.getTerminal();
 	}
 
 	@Override
-	public Expression visit(Nonterminal nonterminal) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Nonterminal nonterminal) {
+		String str = generateNonterminalValue(nonterminal);
+		if(str.equals("")){
+			return grammar.getExpression(nonterminal).accept(this);
+		}
+		incrementCoverage(nonterminal);
+		return str;
+	}
+
+	private void incrementCoverage(Nonterminal nonterminal) {
+		coverage.put(nonterminal, coverage.get(nonterminal)+1);		
 	}
 
 	@Override
-	public Expression visit(Optional optional) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Optional optional) {
+		return optional.accept(this);
 	}
 
 	@Override
-	public Expression visit(Star star) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Star star) {
+		return star.accept(this);
 	}
 
 	@Override
-	public Expression visit(Plus plus) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Plus plus) {
+		return plus.accept(this);
 	}
 
 	@Override
-	public Expression visit(Sequence sequence) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Sequence sequence) {
+		String str = "";
+		for(Expression exp : sequence.getSequence()){
+			str += exp.accept(this);
+		}
+		return str;
 	}
 
 	@Override
-	public Expression visit(Empty empty) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Empty empty) {
+		return "";
 	}
 
 	@Override
-	public Expression visit(Choice choice) {
-		// TODO Auto-generated method stub
-		return null;
+	public String visit(Choice choice) {
+		return choice.getChoices().get(0).accept(this);
+	}
+	
+	private String generateNonterminalValue(Nonterminal nonterminal){
+		if(literals.containsNonterminal(nonterminal)){
+			return literals.getValue(nonterminal).toString();
+		}
+		else if(nonterminal.getName().contains("IntegerLiteral") ||
+				nonterminal.getName().contains("Digit") ||
+				nonterminal.getName().contains("DecimalNumeral")){
+			Object i = 1;
+			literals.addLiterals(nonterminal, i);
+			return i.toString();
+		}
+		else if(nonterminal.getName().contains("Identifier")){
+			Object i = "ident";
+			literals.addLiterals(nonterminal, i);
+			return i.toString();
+		}
+		else if(nonterminal.getName().contains("SingleCharacter")){
+			Object i = 'a';
+			literals.addLiterals(nonterminal, i);
+			return i.toString();
+		}
+		else if(nonterminal.getName().contains("StringCharacter")){
+			Object i = 'x';
+			literals.addLiterals(nonterminal, i);
+			return i.toString();
+		}
+		else{
+			return "";
+		}
 	}
 
 }
