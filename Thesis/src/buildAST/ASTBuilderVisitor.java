@@ -47,8 +47,7 @@ import gtojava.Star;
 public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
 	private Grammar grammar;
-	ASTPrinter printer = new ASTPrinter();
-
+	
 	public ASTBuilderVisitor() {
 		this.grammar = new Grammar();
 	}
@@ -85,25 +84,15 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 
 	@Override
 	public Expression visitParserRuleSpec(ParserRuleSpecContext ctx) {
-		Nonterminal n = new Nonterminal("");
-		Expression exp = new Empty();
-		if(ctx.RULE_REF() != null){
-			n.setName(ctx.RULE_REF().getText());
-		}
-		if(ctx.ruleBlock() != null){
-			exp = ctx.ruleBlock().accept(this);
-		}
+		Nonterminal n = new Nonterminal(ctx.RULE_REF().getText());
+		Expression exp = ctx.ruleBlock().accept(this);
 		grammar.addProductionRule(new ProductionRule(n, exp));
 		return exp;
 	}
 	
 	@Override
 	public Expression visitRuleBlock(RuleBlockContext ctx) {
-		Expression result = new Empty();
-		if(ctx.ruleAltList() != null){
-			result = ctx.ruleAltList().accept(this);
-		}
-		return result;
+		return ctx.ruleAltList().accept(this);
 	}
 	
 	@Override
@@ -117,11 +106,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
 	@Override
 	public Expression visitLabeledAlt(LabeledAltContext ctx) {
-		Expression result = new Empty();
-		if(ctx.alternative() != null){
-			result = ctx.alternative().accept(this);
-		}
-		return result;
+		return ctx.alternative().accept(this);		
 	}
 	
 	@Override
@@ -196,20 +181,20 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 
 	@Override
 	public Expression visitAtom(AtomContext ctx) {
-		Expression exp = new Empty();
+		Expression result = new Empty();
 		if(ctx.range() != null){
-			exp = ctx.range().accept(this);
+			result = ctx.range().accept(this);
 		}
 		else if(ctx.terminal() != null){
-			exp = ctx.terminal().accept(this);
+			result = ctx.terminal().accept(this);
 		}
 		else if(ctx.ruleref() != null){
-			exp = ctx.ruleref().accept(this);
+			result = ctx.ruleref().accept(this);
 		}
 		else if(ctx.notSet() != null){
-			exp = ctx.notSet().accept(this);
+			result = ctx.notSet().accept(this);
 		}
-		return exp;
+		return result;
 	}
 	
 	@Override
@@ -237,11 +222,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
 	@Override
 	public Expression visitBlockSuffix(BlockSuffixContext ctx) {
-		Expression result = new Empty();
-		if(ctx.ebnfSuffix() != null){
-			result = ctx.ebnfSuffix().accept(this);
-		}
-		return result;
+		return ctx.ebnfSuffix().accept(this);
 	}
 	@Override
 	public Expression visitRange(RangeContext ctx) {
@@ -249,42 +230,43 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		sequence.addExpr(new Nonterminal(ctx.STRING_LITERAL(0).getText()));
 		sequence.addExpr(new Nonterminal(ctx.RANGE().getText())); 
 		sequence.addExpr(new Nonterminal(ctx.STRING_LITERAL(1).getText()));
+//		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(0).getText()));
+//		sequence.addExpr(new Nonterminal(ctx.RANGE().getText())); 
+//		sequence.addExpr(new Terminal(ctx.STRING_LITERAL(1).getText()));
 		return sequence;
 	}
 	
 	@Override
 	public Expression visitTerminal(TerminalContext ctx) {
-		Expression exp = new Empty();
+		Expression result = new Empty();
 		if(ctx.TOKEN_REF() != null){
-			exp = new Nonterminal(ctx.TOKEN_REF().getText());
+			result = new Nonterminal(ctx.TOKEN_REF().getText());
 		}
 		else if(ctx.STRING_LITERAL() != null){
-			exp = new Nonterminal(ctx.STRING_LITERAL().getText());
+			result = new Nonterminal(ctx.STRING_LITERAL().getText());
 		}
-		return exp;
+//		else if(ctx.STRING_LITERAL() != null){
+//			result = new Terminal(ctx.STRING_LITERAL().getText());
+//		}
+		return result;
 	}
 	
 
 	@Override
 	public Expression visitRuleref(RulerefContext ctx) {
-		Nonterminal n = new Nonterminal("");
-		if(ctx.RULE_REF() != null){
-			n.setName(ctx.RULE_REF().getText());
-		}
-		return n;
+		return new Nonterminal(ctx.RULE_REF().getText());
 	}
 
-	
 	@Override
 	public Expression visitEbnfSuffix(EbnfSuffixContext ctx) {
 		Expression result = new Empty();
 		if(ctx.QUESTION(0) != null){
 			result = new Optional();
 		}
-		if(ctx.STAR() != null){
+		else if(ctx.STAR() != null){
 			result = new Star();
 		}
-		if(ctx.PLUS() != null){
+		else if(ctx.PLUS() != null){
 			result = new Plus();
 		}
 		return result;
@@ -293,11 +275,11 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitNotSet(NotSetContext ctx) {
 		Sequence sequence = new Sequence();
-		if(ctx.NOT() != null && ctx.setElement() != null){
+		if(ctx.setElement() != null){
 			sequence.addExpr(new Nonterminal(ctx.NOT().getText()));
 			sequence.addExpr(ctx.setElement().accept(this));
 		}
-		else if(ctx.NOT() != null && ctx.blockSet() != null){
+		else if(ctx.blockSet() != null){
 			sequence.addExpr(new Nonterminal(ctx.NOT().getText()));
 			sequence.addExpr(ctx.blockSet().accept(this));
 		}
@@ -310,13 +292,16 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		if(ctx.TOKEN_REF() != null){
 			result = new Nonterminal(ctx.TOKEN_REF().getText());
 		}
-		if(ctx.STRING_LITERAL() != null){
+		else if(ctx.STRING_LITERAL() != null){
 			result = new Nonterminal(ctx.STRING_LITERAL().getText());
 		}
-		if(ctx.range() != null){
+//		if(ctx.STRING_LITERAL() != null){
+//			result = new Terminal(ctx.STRING_LITERAL().getText());
+//		}
+		else if(ctx.range() != null){
 			result = ctx.range().accept(this);
 		}
-		if(ctx.LEXER_CHAR_SET() != null){
+		else if(ctx.LEXER_CHAR_SET() != null){
 			result = new Nonterminal(ctx.LEXER_CHAR_SET().getText());
 		}
 		return result;
@@ -327,13 +312,13 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Choice choice = new Choice();
 		Sequence sequence = new Sequence();
 		sequence.addExpr(new Nonterminal(ctx.LPAREN().getText()));
-		if(!(ctx.setElement().isEmpty()) && ctx.setElement().size() > 1){
+		if(ctx.setElement().size() > 1){
 			for(int i = 0; i < ctx.setElement().size(); i++){
 				choice.addExpr(ctx.setElement(i).accept(this));
 			}
 			sequence.addExpr(choice);
 		}
-		else if(ctx.setElement(0) != null){
+		else{
 			sequence.addExpr(ctx.setElement(0).accept(this));
 		}
 		sequence.addExpr(new Nonterminal(ctx.RPAREN().getText()));
@@ -343,9 +328,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitLabeledElement(LabeledElementContext ctx) {
 		Sequence sequence = new Sequence();
-		if(ctx.id() != null){
-			sequence.addExpr(ctx.id().accept(this));
-		}
+		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			sequence.addExpr(new Nonterminal(ctx.ASSIGN().getText()));
 		}
@@ -364,25 +347,16 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 
 	@Override
 	public Expression visitLexerRule(LexerRuleContext ctx) {
-		Nonterminal n = new Nonterminal("");
+		Nonterminal n = new Nonterminal(ctx.TOKEN_REF().getText());
 		Expression result = new Empty();
-		if(ctx.TOKEN_REF() != null){
-			n.setName(ctx.TOKEN_REF().getText());
-		}
-		if(ctx.lexerRuleBlock() != null){
-			 result = ctx.lexerRuleBlock().accept(this);
-		}
+		result = ctx.lexerRuleBlock().accept(this);
 		grammar.addProductionRule(new ProductionRule(n, result));
 		return result;
 	}
 	
 	@Override
 	public Expression visitLexerRuleBlock(LexerRuleBlockContext ctx) {
-		Expression result = new Empty();
-		if(ctx.lexerAltList() != null){
-			result = ctx.lexerAltList().accept(this);
-		}
-		return result;
+		return ctx.lexerAltList().accept(this);
 	}
 	
 	@Override
@@ -396,20 +370,14 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
 	@Override
 	public Expression visitLexerAlt(LexerAltContext ctx) {
-		Expression result = new Empty();
-		if(ctx.lexerElements() != null){
-			result = ctx.lexerElements().accept(this);
-		}
-		return result;
+		return ctx.lexerElements().accept(this);
 	}
 	
 	@Override
 	public Expression visitLexerElements(LexerElementsContext ctx) {
 		Sequence result = new Sequence();
-		if(ctx.lexerElement() != null){
-			for(int i = 0; i < ctx.lexerElement().size(); i++){
-				result.addExpr(ctx.lexerElement(i).accept(this));
-			}
+		for(int i = 0; i < ctx.lexerElement().size(); i++){
+			result.addExpr(ctx.lexerElement(i).accept(this));
 		}
 		return result;
 	}
@@ -483,9 +451,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitLabeledLexerElement(LabeledLexerElementContext ctx) {
 		Sequence sequence = new Sequence();
-		if(ctx.id() != null){
-			sequence.addExpr(ctx.id().accept(this));
-		}
+		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			sequence.addExpr(new Nonterminal(ctx.ASSIGN().getText()));
 		}

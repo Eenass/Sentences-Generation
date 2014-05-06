@@ -6,7 +6,6 @@ import gtojava.Expression;
 import gtojava.Nonterminal;
 import gtojava.Optional;
 import gtojava.Plus;
-import gtojava.Selectable;
 import gtojava.Sequence;
 import gtojava.Star;
 import gtojava.Terminal;
@@ -56,12 +55,6 @@ public class NC implements Visitor<Expression>{
 
 	@Override
 	public Expression visit(Empty empty) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Expression visit(Selectable selectable) {
 		// TODO Auto-generated method stub
 		return null;
 	}
