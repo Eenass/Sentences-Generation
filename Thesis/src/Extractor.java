@@ -25,6 +25,9 @@ public class Extractor {
 			 writer.println("\n"+rule.getRuleName().accept(printer) + "\n\t:\t" + rule.getExpr().accept(printer) + "\n\t;");
 		 }
 		 writer.close();
+//		 for(ProductionRule rule: grammar.getGrammar()){
+//			 System.out.println("\n"+rule.getRuleName().accept(printer) + "\n\t:\t" + rule.getExpr().accept(printer) + "\n\t;");
+//		 }
 	}	 		
 
 }

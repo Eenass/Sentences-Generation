@@ -2,8 +2,13 @@ package gtojava;
 
 public class Star extends Expression{
 	
-	Expression expr;
+	private Expression expr;
+	private String marker;
 	
+	public void setMarker(String marker) {
+		this.marker = marker;
+	}
+
 	public Star(Expression e){
 		this.expr = e;
 	}
@@ -11,6 +16,11 @@ public class Star extends Expression{
 	public Star() {
 	}
 
+	public Star(Expression expr, String marker){
+		this.expr = expr;
+		this.marker = marker;
+	}
+	
 	public Expression getExpr() {
 		return expr;
 	}
@@ -24,4 +34,11 @@ public class Star extends Expression{
 		return visitor.visit(this);
 	}
 
+	public boolean isMarked(){
+		return !this.marker.equals("");
+	}
+	
+	public String getMarker() {
+		return marker;
+	}
 }

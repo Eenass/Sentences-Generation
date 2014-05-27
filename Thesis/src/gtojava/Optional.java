@@ -2,13 +2,23 @@ package gtojava;
 
 public class Optional extends Expression{
 
-	Expression expr;
+	private Expression expr;
+	private String marker;
 	
+	public void setMarker(String marker) {
+		this.marker = marker;
+	}
+
 	public Optional(){
 	}
 	
-	public Optional(Expression e){
-		this.expr = e;
+	public Optional(Expression expr){
+		this.expr = expr;
+	}
+	
+	public Optional(Expression expr, String marker){
+		this.expr = expr;
+		this.marker = marker;
 	}
 
 	public Expression getExpr() {
@@ -22,6 +32,14 @@ public class Optional extends Expression{
 	@Override
 	public <T> T accept(Visitor<T> visitor) {
 		return visitor.visit(this);
+	}
+	
+	public boolean isMarked(){
+		return !this.marker.equals("");
+	}
+	
+	public String getMarker() {
+		return marker;
 	}
 
 }

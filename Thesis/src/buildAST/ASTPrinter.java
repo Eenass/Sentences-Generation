@@ -57,14 +57,15 @@ public class ASTPrinter implements Visitor<String>{
 
 	private String visitInnerChoice(Choice choice) {
 		String str = "";
-		for(Expression exp: choice.getChoices()){
-			if(choice.getChoices().indexOf(exp) != choice.getChoices().size() - 1){
+		for(int i = 0; i < choice.getChoices().size(); i++){
+			Expression exp = choice.getChoices().get(i);
+			if(i != choice.getChoices().size()-1){
 				str += exp.accept(this) + "|";
 			}
 			else{
 				str += exp.accept(this);
 			}
-		}
+		}	
 		return str;
 	}
 
@@ -76,8 +77,9 @@ public class ASTPrinter implements Visitor<String>{
 	@Override
 	public String visit(Choice choice) {
 		String str = "";
-		for(Expression exp: choice.getChoices()){
-			if(choice.getChoices().indexOf(exp) != choice.getChoices().size() - 1){
+		for(int i = 0; i < choice.getChoices().size(); i++){
+			Expression exp = choice.getChoices().get(i);
+			if(i != choice.getChoices().size() - 1){
 				str += exp.accept(this) + "\n\t|\t";
 			}
 			else{
