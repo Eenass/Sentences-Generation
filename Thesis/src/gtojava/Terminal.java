@@ -3,13 +3,13 @@ package gtojava;
 public class Terminal extends Expression{
 
 	private String terminal;
-	private String marker; 
+	private boolean marker; 
 	
 	public Terminal(String terminal) {
 		this.terminal = terminal;
 	}
 	
-	public Terminal(String terminal, String marker){
+	public Terminal(String terminal, boolean marker){
 		this.terminal = terminal;
 		this.marker = marker;
 	}
@@ -27,7 +27,7 @@ public class Terminal extends Expression{
 		this.terminal = terminal;
 	}
 	
-	public void setMarker(String marker) {
+	public void setMarker(boolean marker) {
 		this.marker = marker;
 	}
 
@@ -39,12 +39,12 @@ public class Terminal extends Expression{
 		return terminal.equals(((Terminal)other).getTerminal());
 	}
 
-	public String getMarker() {
+	public boolean getMarker() {
 		return marker;
 	}
 	
 	public boolean isMarked(){
-		return !this.marker.equals("");
+		return marker;
 	}
 
 }

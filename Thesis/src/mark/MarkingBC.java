@@ -41,34 +41,34 @@ public class MarkingBC implements Visitor<Expression>{
 
 	@Override
 	public Expression visit(Terminal terminal) {
-		terminal.setMarker("");
+		terminal.setMarker(true);
 		return terminal;
 	}
 
 	@Override
 	public Expression visit(Nonterminal nonterminal) {
-		nonterminal.setMarker("bc");
+		nonterminal.setMarker(true);
 		return nonterminal;
 	}
 
 	@Override
 	public Expression visit(Optional optional) {
 		optional.setExpr(optional.getExpr().accept(this));
-		optional.setMarker("bc");
+		optional.setMarker(true);
 		return optional;
 	}
 
 	@Override
 	public Expression visit(Star star) {
 		star.setExpr(star.getExpr().accept(this));
-		star.setMarker("bc");
+		star.setMarker(true);
 		return star;
 	}
 
 	@Override
 	public Expression visit(Plus plus) {
 		plus.setExpr(plus.getExpr().accept(this));
-		plus.setMarker("bc");
+		plus.setMarker(true);
 		return plus;
 	}
 
@@ -78,13 +78,13 @@ public class MarkingBC implements Visitor<Expression>{
 		for(Expression exp : sequence.getSequence()){	
 			temp.addExpr(exp.accept(this));
 		}
-		temp.setMarker("bc");
+		temp.setMarker(true);
 		return temp;
 	}
 
 	@Override
 	public Expression visit(Empty empty) {
-		empty.setMarker("");
+		empty.setMarker(true);
 		return empty;
 	}
 
@@ -94,7 +94,7 @@ public class MarkingBC implements Visitor<Expression>{
 		for(Expression exp : choice.getChoices()){
 			temp.addExpr(exp.accept(this));
 		}
-		temp.setMarker("bc");
+		temp.setMarker(true);
 		return temp;
 	}
 	

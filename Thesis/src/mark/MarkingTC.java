@@ -38,32 +38,32 @@ public class MarkingTC implements Visitor<Expression>{
 	}
 	@Override
 	public Expression visit(Terminal terminal) {
-		terminal.setMarker("");
+		terminal.setMarker(true);
 		return terminal;
 	}
 
 	@Override
 	public Expression visit(Nonterminal nonterminal) {
-		nonterminal.setMarker("tc");
+		nonterminal.setMarker(true);
 		return nonterminal;
 	}
 
 	@Override
 	public Expression visit(Optional optional) {
-		optional.setMarker("");
+		optional.setMarker(false);
 		return optional;
 	}
 
 	@Override
 	public Expression visit(Star star) {
-		star.setMarker("");
+		star.setMarker(false);
 		return star;
 	}
 
 	@Override
 	public Expression visit(Plus plus) {
 		plus.setExpr(plus.getExpr().accept(this));
-		plus.setMarker("tc");
+		plus.setMarker(true);
 		return plus;
 	}
 
@@ -73,13 +73,13 @@ public class MarkingTC implements Visitor<Expression>{
 		for(Expression exp : sequence.getSequence()){	
 			temp.addExpr(exp.accept(this));
 		}
-		temp.setMarker("tc");
+		temp.setMarker(true);
 		return temp;
 	}
 
 	@Override
 	public Expression visit(Empty empty) {
-		empty.setMarker("");
+		empty.setMarker(true);
 		return empty;
 	}
 
@@ -89,7 +89,7 @@ public class MarkingTC implements Visitor<Expression>{
 		for(Expression exp : choice.getChoices()){
 			temp.addExpr(exp.accept(this));
 		}
-		temp.setMarker("tc");
+		temp.setMarker(true);
 		return temp;
 	}
 

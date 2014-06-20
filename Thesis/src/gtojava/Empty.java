@@ -2,16 +2,16 @@ package gtojava;
 
 public class Empty extends Expression{
 
-	private String marker;
+	private boolean marker;
 	
-	public void setMarker(String marker) {
+	public void setMarker(boolean marker) {
 		this.marker = marker;
 	}
 
 	public Empty() {		
 	}
 
-	public Empty(String marker){
+	public Empty(boolean marker){
 		this.marker = marker;
 	}
 	
@@ -21,10 +21,10 @@ public class Empty extends Expression{
 	}
 	
 	public boolean isMarked(){
-		return !this.marker.equals("");
+		return marker;
 	}
 	
-	public String getMarker() {
+	public boolean getMarker() {
 		return marker;
 	}
 

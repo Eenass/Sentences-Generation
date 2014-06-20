@@ -3,13 +3,13 @@ package gtojava;
 public class Nonterminal extends Expression{
 
 	private String name;
-	private String marker;
+	private boolean marker;
 	
 	public Nonterminal(String name) {
 		this.name = name;
 	}
 
-	public Nonterminal(String name, String marker){
+	public Nonterminal(String name, boolean marker){
 		this.name = name;
 		this.marker = marker;
 	}
@@ -26,7 +26,7 @@ public class Nonterminal extends Expression{
 		return name;
 	}
 
-	public void setMarker(String marker) {
+	public void setMarker(boolean marker) {
 		this.marker = marker;
 	}
 
@@ -39,10 +39,10 @@ public class Nonterminal extends Expression{
 	}
 	
 	public boolean isMarked(){
-		return !this.marker.equals("");
+		return marker;
 	}
 
-	public String getMarker() {
+	public boolean getMarker() {
 		return marker;
 	}
 }

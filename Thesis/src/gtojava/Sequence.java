@@ -11,9 +11,9 @@ public class Sequence extends Expression{
 		this.sequence = sequence;
 	}
 
-	private String marker;
+	private boolean marker;
 	
-	public void setMarker(String marker) {
+	public void setMarker(boolean marker) {
 		this.marker = marker;
 	}
 
@@ -25,7 +25,7 @@ public class Sequence extends Expression{
 		this.sequence = sequence;
 	}
 
-	public Sequence(List<Expression> sequence, String marker){
+	public Sequence(List<Expression> sequence, boolean marker){
 		this.sequence = sequence;
 		this.marker = marker;
 	}
@@ -43,14 +43,14 @@ public class Sequence extends Expression{
 	}
 	
 	public boolean isMarked(){
-		return !this.marker.equals("");
+		return marker;
 	}
 	
-	public String getMarker() {
+	public boolean getMarker() {
 		return this.marker;
 	}
 	
-	public String getName() {
+	public boolean getName() {
 		return marker;
 	}
 

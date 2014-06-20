@@ -23,8 +23,7 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	
 	private int maxInt = Integer.MAX_VALUE;
 	private GrammarMap grammar;
-	private Map<Nonterminal, Integer> slenNonterminals;
-	private Map<Terminal, Integer> slenTerminals;
+	private Map<Nonterminal, Integer> slen;
 	private Map<Nonterminal, ProductionsRLEN> rlen;
 	private Map<Nonterminal, Expression> shortest;
 	private boolean too_big = false;
@@ -34,18 +33,13 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	
 	public PurdomPhaseOne(GrammarMap grammar) {
 		this.grammar = grammar;
-		this.slenNonterminals = new HashMap<Nonterminal, Integer>();
-		this.slenTerminals = new HashMap<Terminal, Integer>();
+		this.slen = new HashMap<Nonterminal, Integer>();
 		this.rlen = new HashMap<Nonterminal, ProductionsRLEN>();
 		this.shortest = new HashMap<Nonterminal, Expression>();
 	}
 	
-	public Map<Nonterminal, Integer> getSlenNonterminals() {
-		return slenNonterminals;
-	}
-
-	public Map<Terminal, Integer> getSlenTerminals() {
-		return slenTerminals;
+	public Map<Nonterminal, Integer> getSlen() {
+		return slen;
 	}
 
 	public Map<Nonterminal, ProductionsRLEN> getRlen() {
@@ -63,10 +57,10 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 
 	@Override
 	public Integer visit(Nonterminal nonterminal) {
-		if(this.slenNonterminals.get(nonterminal).equals(maxInt)){
+		if(this.slen.get(nonterminal).equals(maxInt)){
 			too_big = true;
 		}
-		return this.slenNonterminals.get(nonterminal);
+		return this.slen.get(nonterminal);
 	}
 
 	@Override
@@ -112,11 +106,8 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	}
 	
 	public void init(){
-		for(Terminal t : grammar.getTerminals()){
-			this.slenTerminals.put(t, 1);
-		}		
 		for(Nonterminal n : grammar.getNonterminals()){
-			this.slenNonterminals.put(n, maxInt);
+			this.slen.put(n, maxInt);
 			this.shortest.put(n, new Empty());
 			ProductionsRLEN p = new ProductionsRLEN(grammar.getExpression(n));
 			this.rlen.put(n, p);
@@ -143,9 +134,9 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 				Expression shortest = entry.getKey();
 				int minLength = entry.getValue(); 
 				if(!(minLength < 0) && (minLength != maxInt)){
-					if(minLength < this.slenNonterminals.get(n)){
+					if(minLength < this.slen.get(n)){
 						this.shortest.put(n, shortest);
-						this.slenNonterminals.put(n, minLength);
+						this.slen.put(n, minLength);
 						change = true;
 					}
 				}	

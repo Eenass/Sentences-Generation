@@ -3,9 +3,9 @@ package gtojava;
 public class Plus extends Expression{
 
 	private Expression expr;
-	private String marker;
+	private boolean marker;
 	
-	public void setMarker(String marker) {
+	public void setMarker(boolean marker) {
 		this.marker = marker;
 	}
 
@@ -16,7 +16,7 @@ public class Plus extends Expression{
 	public Plus() {
 	}
 	
-	public Plus(Expression expr, String marker){
+	public Plus(Expression expr, boolean marker){
 		this.expr = expr;
 		this.marker = marker;
 	}
@@ -35,10 +35,10 @@ public class Plus extends Expression{
 	}
 	
 	public boolean isMarked(){
-		return !this.marker.equals("");
+		return marker;
 	}
 	
-	public String getMarker() {
+	public boolean getMarker() {
 		return marker;
 	}
 

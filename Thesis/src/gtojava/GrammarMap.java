@@ -1,6 +1,7 @@
 package gtojava;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,9 +13,13 @@ public class GrammarMap {
 	Map<Nonterminal, Expression> grammarMap;
 	Map<Nonterminal, Expression> startSymbol;
 	
+	public GrammarMap(){
+		
+	}
+	
 	public GrammarMap(Grammar grammar){
 		this.grammar = grammar;
-		this.grammarMap = new HashMap<Nonterminal, Expression>();
+		this.grammarMap = new LinkedHashMap<Nonterminal, Expression>();
 		this.startSymbol = new HashMap<Nonterminal, Expression>();
 		grammarToMap();
 	}
@@ -36,6 +41,10 @@ public class GrammarMap {
 		return grammarMap;
 	}
 	
+	public void setGrammarMap(Map<Nonterminal, Expression> grammarMap) {
+		this.grammarMap = grammarMap;
+	}
+
 	public Map<Nonterminal, Expression> getStartSymbol() {
 		return startSymbol;
 	}

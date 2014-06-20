@@ -75,7 +75,8 @@ public class GetNonterminals implements Visitor<Expression>{
 
 	@Override
 	public Expression visit(Choice choice) {
-		return choice;
+		assert(false) : "There may not be a choice";
+		throw new UnsupportedOperationException();
 	}
 
 }
