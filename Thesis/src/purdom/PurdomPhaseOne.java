@@ -14,8 +14,7 @@ import gtojava.Visitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,9 +32,9 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	
 	public PurdomPhaseOne(GrammarMap grammar) {
 		this.grammar = grammar;
-		this.slen = new HashMap<Nonterminal, Integer>();
-		this.rlen = new HashMap<Nonterminal, ProductionsRLEN>();
-		this.shortest = new HashMap<Nonterminal, Expression>();
+		this.slen = new LinkedHashMap<Nonterminal, Integer>();
+		this.rlen = new LinkedHashMap<Nonterminal, ProductionsRLEN>();
+		this.shortest = new LinkedHashMap<Nonterminal, Expression>();
 	}
 	
 	public Map<Nonterminal, Integer> getSlen() {

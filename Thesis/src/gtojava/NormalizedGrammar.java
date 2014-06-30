@@ -9,6 +9,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 	private GrammarMap grammar;
 	private GrammarMap normalizedGrammar;
 	private Map<Nonterminal, Expression> temp = new LinkedHashMap<>();
+	private Map<Nonterminal, Expression> newRules = new LinkedHashMap<Nonterminal, Expression>();
 	private Map<Nonterminal, Expression> start = new HashMap<>();
 	protected int count = 0;
 
@@ -24,6 +25,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 				start.put(n, this.grammar.getExpression(n).accept(this));
 			}
 			temp.put(n, this.grammar.getExpression(n).accept(this));
+			temp.putAll(newRules);
 		}
 		this.normalizedGrammar.setGrammarMap(temp);
 		this.normalizedGrammar.setStartSymbol(start);
@@ -47,7 +49,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 			count++;
 			Nonterminal nt = new Nonterminal(name);
 			Expression exp = optional.getExpr().accept(this);
-			temp.put(nt, exp);
+			newRules.put(nt, exp);
 			result.setExpr(nt);
 		}
 		else{
@@ -65,7 +67,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 			count++;
 			Nonterminal nt = new Nonterminal(name);
 			Expression exp = star.getExpr().accept(this);
-			temp.put(nt, exp);
+			newRules.put(nt, exp);
 			result.setExpr(nt);
 		}
 		else{
@@ -83,7 +85,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 			count++;
 			Nonterminal nt = new Nonterminal(name);
 			Expression exp = plus.getExpr().accept(this);
-			temp.put(nt, exp);
+			newRules.put(nt, exp);
 			result.setExpr(nt);
 		}
 		else{
@@ -102,7 +104,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 				count++;
 				Nonterminal nt = new Nonterminal(name);
 				Expression expr = exp.accept(this);
-				temp.put(nt, expr);
+				newRules.put(nt, expr);
 				result.addExpr(nt);
 			}
 			else{
@@ -126,7 +128,7 @@ public class NormalizedGrammar implements Visitor<Expression>{
 				count++;
 				Nonterminal nt = new Nonterminal(name);
 				Expression expr = exp.accept(this);
-				temp.put(nt, expr);
+				newRules.put(nt, expr);
 				result.addExpr(nt);
 			}
 			else{

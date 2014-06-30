@@ -9,17 +9,18 @@ import java.util.Set;
 
 public class ProductionsMark {
 
-	private Expression expr;
+//	private Expression expr;
+	private Set<Expression> set;
 	private Map<Expression, Boolean> prodsMark;
 	
-	public ProductionsMark(Expression expr) {
-		this.expr = expr;
+	public ProductionsMark(Set<Expression> set) {
+		this.set = set;
 		this.prodsMark = new LinkedHashMap<Expression, Boolean>();
 	}
 
 	public void markProductions(){
-		List<Expression> prods = new Productions(expr).getProdList();
-		for(Expression e : prods){
+//		List<Expression> prods = new Productions(expr).getProdList();
+		for(Expression e : this.set){
 			this.prodsMark.put(e, false);
 		}
 	}

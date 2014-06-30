@@ -7,6 +7,7 @@ import gtojava.ProductionRule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PurdomPhaseTwo {
@@ -23,8 +24,8 @@ public class PurdomPhaseTwo {
 		this.startSymbol = startSymbol;
 		this.slen = slenNonterminals;
 		this.rlen = rlen;
-		this.dlen = new HashMap<Nonterminal, Integer>();
-		this.prev = new HashMap<Nonterminal, ProductionRule>();
+		this.dlen = new LinkedHashMap<Nonterminal, Integer>();
+		this.prev = new LinkedHashMap<Nonterminal, ProductionRule>();
 	}
 	
 	public Map<Nonterminal, ProductionRule> getPrev() {

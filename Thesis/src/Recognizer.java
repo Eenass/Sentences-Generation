@@ -47,7 +47,8 @@ public class Recognizer {
 
 	private static List<String> getFiles() {
 		List<String> inputFiles = new ArrayList<String>();
-		String targetDir = "C:\\Users\\E. Butrus\\Dropbox\\MASTER\\Graduation\\TestProject\\src\\ast";
+//		String targetDir = "C:\\Users\\E. Butrus\\Dropbox\\MASTER\\Graduation\\TestProject\\src\\ast";
+		String targetDir = "..\\Thesis\\src\\datawriting\\ncData";
 		File dir = new File(targetDir);
 		File[] files = dir.listFiles();
 		for (File f: files){
@@ -98,6 +99,7 @@ public class Recognizer {
 		
 		File f = new File(s);
 		String filename = f.getName().replace(".java", "");
+		System.out.println(parser.getNumberOfSyntaxErrors());
 		String str = parser.getNumberOfSyntaxErrors() > 0? "No" : "Yes";
 		buffer.append(filename + " " + str + "\n");
 	}
