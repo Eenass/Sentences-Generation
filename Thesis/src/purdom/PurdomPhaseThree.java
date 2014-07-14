@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import buildAST.ASTPrinter;
+import data.RepitionCleaner;
 
 public class PurdomPhaseThree {
 	
@@ -29,7 +30,6 @@ public class PurdomPhaseThree {
 	private Map<Nonterminal, Expression> once;
 	private Map<Nonterminal, ProductionsMark> mark;
 	private Map<Nonterminal, Integer> onst;
-	private Map<String, String> regularExp;
 	private Map<Nonterminal, Boolean> covered;
 	
 	private final Terminal ready = new Terminal("ready"),
@@ -42,19 +42,24 @@ public class PurdomPhaseThree {
 	protected List<String> output = new ArrayList<String>();
 	private List<List<String>> result = new ArrayList<List<String>>();
 	protected ASTPrinter printer = new ASTPrinter();
+	protected RepitionCleaner cleaner = new RepitionCleaner();
+	private Map<Expression, Boolean> productionCoverage;
 	
 	public PurdomPhaseThree(GrammarMap grammar, Map<Nonterminal, ProductionRule> prev,
-			Map<Nonterminal, Expression> shortest,Map<Nonterminal, ProductionsRLEN> rlen,
-			Map<String, String> regularExp) {
+			Map<Nonterminal, Expression> shortest,Map<Nonterminal, ProductionsRLEN> rlen) {
 		this.grammar = grammar;
 		this.prev = prev;
 		this.shortest = shortest;
 		this.rlen = rlen;
-		this.regularExp = regularExp;
 		this.once = new LinkedHashMap<Nonterminal, Expression>();
 		this.mark = new LinkedHashMap<Nonterminal, ProductionsMark>();
 		this.onst = new LinkedHashMap<Nonterminal, Integer>();
 		this.covered = new LinkedHashMap<Nonterminal, Boolean>();
+		this.productionCoverage = new LinkedHashMap<Expression, Boolean>();
+	}
+
+	public Map<Expression, Boolean> getProductionCoverage() {
+		return productionCoverage;
 	}
 
 	public Map<Nonterminal, Expression> getOnce() {
@@ -72,7 +77,7 @@ public class PurdomPhaseThree {
 	public Map<Nonterminal, Integer> getOnst() {
 		return onst;
 	}
-
+	
 	public void init(){
 		for(Nonterminal n : this.grammar.getNonterminals()){
 			this.once.put(n, ready);
@@ -105,21 +110,26 @@ public class PurdomPhaseThree {
 	}
 	
 	private void processStack(Expression production){
-//		System.out.println("production " + production.accept(printer));
 		this.onst.put(nt, this.onst.get(nt) - 1);
+		this.productionCoverage.put(production, true);
 		ExpressionElements elements = new ExpressionElements(production);
 		for(Expression element : elements.getElements()){
-			if((element.getClass() == Optional.class || element.getClass() == Star.class || element.getClass() == Plus.class)){
+			if(element.getClass() == Optional.class || element.getClass() == Star.class || element.getClass() == Plus.class){
 				GetNonterminals get = new GetNonterminals(element);
 				List<Nonterminal> list = get.getNonterminals();
-				for(Nonterminal n : list){
-					stack.push(n);
-					this.onst.put(n, this.onst.get(n)+1);
+				if(list.isEmpty()){
+					stack.push(element.accept(cleaner));
 				}
+				else{
+					for(Nonterminal n : list){
+						stack.push(n);
+						this.onst.put(n, this.onst.get(n)+1);
+					}
+				}	
 			}	
 			else if(element.getClass() == Nonterminal.class){
 				stack.push(element);
-				this.onst.put((Nonterminal)element, this.onst.get(element)+1);
+				this.onst.put((Nonterminal)element, this.onst.get((Nonterminal)element)+1);
 			}
 			else{
 				stack.push(element);
@@ -128,7 +138,6 @@ public class PurdomPhaseThree {
 		boolean done = false;
 		while(!done){
 			if(stack.isEmpty()){
-//				System.out.println("yes stack is empty");
 				doSentence = false;
 				break;
 			}
@@ -138,15 +147,30 @@ public class PurdomPhaseThree {
 				}
 				Expression e = stack.pop();
 				if(e.getClass() == Terminal.class){
-					if(this.regularExp.containsKey(((Terminal)e).getTerminal())){
-						output.add(this.regularExp.get(((Terminal)e).getTerminal()));
+					String s = "";
+					if(((Terminal)e).getTerminal().contains("[") && ((Terminal)e).getTerminal().contains("]")){
+						if(((Terminal)e).getTerminal().contains("\\u")){
+							String[] l = ((Terminal)e).getTerminal().split("-", 2);
+							s = l[0].substring(1);
+						}	
+						if(!stack.isEmpty() && stack.peek().getClass() == Terminal.class && ((Terminal)stack.peek()).getTerminal().equals("~")){
+							output.add(s);
+							stack.pop();
+						}
+						else{
+							String[] l = ((Terminal)e).getTerminal().split("");
+							output.add(l[2]);
+						}
 					}
 					else if(((Terminal)e).getTerminal().charAt(0) == '\''){
 						output.add(((Terminal)e).getTerminal());
 					}
 					else{
-						output.add("");
+						System.out.print("");
 					}	
+				}
+				else if(e.getClass() == Empty.class){
+					done = false;
 				}
 				else{
 					done = true;
@@ -162,17 +186,14 @@ public class PurdomPhaseThree {
 		Map<Nonterminal, Expression> startSymbol = this.grammar.getStartSymbol();
 		Entry<Nonterminal, Expression> entry = startSymbol.entrySet().iterator().next();
 		Nonterminal start = entry.getKey();
-		System.out.println("phase three start " + start.getName());
 		while(!done){
 			if(this.once.get(start) == finished){
-				System.out.println("yes finished");
 				break;
 			}
 			this.onst.put(start, 1);
 			nt = start;
 			doSentence = true;
 			while(doSentence){
-//				System.out.println("current nt " + nt.getName());
 				this.covered.put(nt, true);
 				Expression onceNt = this.once.get(nt);
 				if(nt.equals(start) && onceNt == finished){
@@ -180,22 +201,18 @@ public class PurdomPhaseThree {
 					break;
 				}
 				else if(onceNt == finished){
-//					System.out.println("onceNt.equals(finished) so SHORTNT");
 					prod = shortN();
 				}
 				else if(!containsONCEcase(onceNt)){
-//					System.out.println("!containsONCEcase(onceNt)) so prod = onceNt");
 					prod = onceNt;
 					this.once.put(nt, ready);
 				}
 				else{
-//					System.out.println("last else");
 					loadONCE();					
-					System.out.println("load once " + nt.accept(printer) + " " + this.once.get(nt).accept(printer));
 					for(Nonterminal i : this.grammar.getNonterminals()){
 						if(!i.equals(start) && !containsONCEcase(this.once.get(i))){
 							Nonterminal j = i;
-//							if (!this.prev.containsKey(j)) continue;
+							if (!this.prev.containsKey(j)) continue;
 							ProductionRule k = this.prev.get(j);
 							while(!containsONCEcase(k.getExpr())){
 								j = k.getRuleName();
@@ -217,8 +234,7 @@ public class PurdomPhaseThree {
 						}
 					}
 					for(Nonterminal n : this.grammar.getNonterminals()){
-						if(this.once.get(n).getClass() == Terminal.class && (this.once.get(n).equals(ready))){//|| this.once.get(n).equals(unsure)
-//							System.out.println("ready to finished " + n.getName() + " " + this.onst.get(n));
+						if(this.once.get(n).getClass() == Terminal.class && (this.once.get(n).equals(ready))){
 							this.once.put(n, finished);
 						}
 					}
@@ -233,7 +249,6 @@ public class PurdomPhaseThree {
 						this.once.put(nt, ready);
 					}
 				}
-//				System.out.println("go to process stack " + prod.accept(printer));
 				processStack(prod);
 			}
 			if(!output.isEmpty()){
@@ -241,30 +256,29 @@ public class PurdomPhaseThree {
 				output = new ArrayList<String>();
 			}
 		}
+		filterDuplicates();
 		return result;
 	}
 	
 	private boolean containsONCEcase(Expression exp){
 		boolean result = false;
-//		if(exp.getClass() == Terminal.class){
-			for(Expression e: onceCases){
-				if(exp == e){
-					result = true;
-					break;
-				}
+		for(Expression e: onceCases){
+			if(exp == e){
+				result = true;
+				break;
 			}
-//		}
+		}
 		return result;
 	}
 
-	private boolean allCovered(){
-		boolean result = true;
-		for(Nonterminal n : this.covered.keySet()){
-			if(!this.covered.get(n)){
-				result = false;
-				break;
-			}	
+	private void filterDuplicates() {
+		List<List<String>> filteredOutput = new ArrayList<List<String>>();
+		for(List<String> l: this.result){
+			if(!filteredOutput.contains(l)){
+				filteredOutput.add(l);
+			}
 		}
-		return result;
+		this.result = filteredOutput;
+		
 	}
 }

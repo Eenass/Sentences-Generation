@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import buildAST.ASTPrinter;
+
 public class PurdomPhaseTwo {
 	
 	private int maxInt = Integer.MAX_VALUE;
@@ -18,6 +20,11 @@ public class PurdomPhaseTwo {
 	private Map<Nonterminal, ProductionsRLEN> rlen;	
 	private Map<Nonterminal, Integer> dlen;
 	private Map<Nonterminal, ProductionRule> prev;
+	private int hasNoPrev;
+
+	public int getHasNoPrev() {
+		return hasNoPrev;
+	}
 
 	public PurdomPhaseTwo(Map<Nonterminal, Expression> startSymbol, Map<Nonterminal, Integer> slenNonterminals,
 						Map<Nonterminal, ProductionsRLEN> rlen) {
@@ -26,6 +33,7 @@ public class PurdomPhaseTwo {
 		this.rlen = rlen;
 		this.dlen = new LinkedHashMap<Nonterminal, Integer>();
 		this.prev = new LinkedHashMap<Nonterminal, ProductionRule>();
+		this.hasNoPrev = 0;
 	}
 	
 	public Map<Nonterminal, ProductionRule> getPrev() {
@@ -53,31 +61,31 @@ public class PurdomPhaseTwo {
 		boolean change = true;
 		while(change){
 			change = false;
-			for(Nonterminal n1 : this.rlen.keySet()){
-				for(Nonterminal n : this.rlen.keySet()){
-					for(Expression exp : this.rlen.get(n1).getKeys()){
-						int rlenExp = this.rlen.get(n1).getProdValue(exp);
-						if(rlenExp == maxInt){
-							continue;
-						}
-						if(this.dlen.get(n) == maxInt){
-							continue;
-						}	
-						if(this.slen.get(n).equals(maxInt)){
-							continue;
-						}
-					
-						int sum = this.dlen.get(n) + this.rlen.get(n1).getProdValue(exp) - this.slen.get(n);
-						ArrayList<Nonterminal> nonterminals = new GetNonterminals(exp).getNonterminals();
-						for(Nonterminal non: nonterminals){
-							if(sum < this.dlen.get(non)){
-								this.dlen.put(non, sum);
-								this.prev.put(non, new ProductionRule(n1, exp));
-								change = true;
-							}
+			for(Nonterminal n : this.rlen.keySet()){
+				for(Expression exp : this.rlen.get(n).getKeys()){
+					int rlenExp = this.rlen.get(n).getProdValue(exp);
+					if(rlenExp == maxInt){
+						continue;
+					}
+					if(this.dlen.get(n) == maxInt){
+						continue;
+					}	
+					if(this.slen.get(n).equals(maxInt)){
+						continue;
+					}
+				
+					int sum = this.dlen.get(n) + this.rlen.get(n).getProdValue(exp) - this.slen.get(n);
+					ArrayList<Nonterminal> nonterminals = new GetNonterminals(exp).getNonterminals();
+					for(Nonterminal non: nonterminals){
+						if(sum < this.dlen.get(non)){
+							change = true;
+							this.dlen.put(non, sum);
+//							if(!non.equals(n1)){
+							this.prev.put(non, new ProductionRule(n, exp));
+//							}
 						}
 					}
-				}		
+				}
 			}
 		}
 		cleanDlenPrev();
@@ -87,8 +95,9 @@ public class PurdomPhaseTwo {
 		Map<Nonterminal, Integer> temp = new HashMap<Nonterminal, Integer>(this.dlen);
 		for(Nonterminal n : temp.keySet()){
 			if(this.dlen.get(n) == maxInt){
-				this.dlen.remove(n);
-				this.prev.remove(n);
+				this.hasNoPrev ++;
+//				this.dlen.remove(n);
+//				this.prev.remove(n);
 			}
 		}
 		

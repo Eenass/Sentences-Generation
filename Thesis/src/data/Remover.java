@@ -3,6 +3,7 @@ package data;
 import gtojava.Choice;
 import gtojava.Empty;
 import gtojava.Expression;
+import gtojava.GrammarMap;
 import gtojava.Nonterminal;
 import gtojava.Optional;
 import gtojava.Plus;
@@ -11,10 +12,42 @@ import gtojava.Star;
 import gtojava.Terminal;
 import gtojava.Visitor;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class Remover implements Visitor<Expression>{
 
 	protected Expression empty = new Empty();
-	public Remover() {
+	private GrammarMap input;
+	private GrammarMap output;
+	private Map<Nonterminal, Expression> startSymbol;
+	
+	
+	public Remover(GrammarMap input, Map<Nonterminal, Expression> startSymbol) {
+		this.input = input;
+		this.startSymbol = startSymbol;
+		this.output = new GrammarMap();
+		remove();
+	}
+	
+	private void remove() {
+		Map<Nonterminal, Expression> tempRules = new LinkedHashMap<>();
+		for(Nonterminal n : this.input.getNonterminals()){
+			Expression accept = this.input.getExpression(n).accept(this);
+			if(n.equals(this.startSymbol.entrySet().iterator().next().getKey())){
+				System.out.println("yes");
+				Map<Nonterminal, Expression> start = new HashMap<>();
+				start.put(n, accept);
+				this.output.setStartSymbol(start);
+			}
+			tempRules.put(n, accept);
+		}
+		this.output.setGrammarMap(tempRules);		
+	}	
+
+	public GrammarMap getOutput() {
+		return output;
 	}
 
 	@Override

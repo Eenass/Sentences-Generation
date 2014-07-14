@@ -204,6 +204,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		else if(ctx.notSet() != null){
 			result = ctx.notSet().accept(this);
 		}
+		else if(ctx.DOT() != null){
+			result = new Terminal(ctx.DOT().getText());
+		}
 		return result;
 	}
 	
@@ -240,7 +243,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Terminal t1 = new Terminal(ctx.STRING_LITERAL(0).getText());
 		grammar.addTerminal(t1);
 		sequence.addExpr(t1);
-		sequence.addExpr(new Nonterminal(ctx.RANGE().getText())); 
+		sequence.addExpr(new Terminal(ctx.RANGE().getText())); 
 		Terminal t2 = new Terminal(ctx.STRING_LITERAL(1).getText());
 		grammar.addTerminal(t2);
 		sequence.addExpr(t2);
@@ -523,6 +526,11 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else if(ctx.LEXER_CHAR_SET() != null){
 			Terminal t = new Terminal(ctx.LEXER_CHAR_SET().getText());
+			grammar.addTerminal(t);
+			result = t;
+		}
+		else if(ctx.DOT() != null){
+			Terminal t = new Terminal(ctx.DOT().getText());
 			grammar.addTerminal(t);
 			result = t;
 		}

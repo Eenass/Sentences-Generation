@@ -5,15 +5,10 @@ import gtojava.Grammar;
 import gtojava.GrammarMap;
 import gtojava.Nonterminal;
 import gtojava.NormalizedGrammar;
-import gtojava.ProductionRule;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import data.StringsTable;
 import buildAST.ASTBuilder;
 import buildAST.ASTPrinter;
 
@@ -29,8 +24,6 @@ public class TestPurdom {
 		GrammarMap grammarMap = new GrammarMap(grammar);
 		NormalizedGrammar NGrammar = new NormalizedGrammar(grammarMap);
 		Map<Nonterminal, Expression> startSymbol = NGrammar.getNormalizedGrammar().getStartSymbol();
-		StringsTable table = new StringsTable();
-		Map<String, String> regularExp = table.getRegular();
 		PurdomPhaseOne purdom1 = new PurdomPhaseOne(NGrammar.getNormalizedGrammar());
 		purdom1.phaseOne();
 		Map<Nonterminal, Integer> slen = purdom1.getSlen();

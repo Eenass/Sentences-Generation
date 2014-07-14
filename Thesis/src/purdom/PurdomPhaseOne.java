@@ -56,6 +56,7 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 
 	@Override
 	public Integer visit(Nonterminal nonterminal) {
+//		System.out.println("nonterminal " + nonterminal.getName());
 		if(this.slen.get(nonterminal).equals(maxInt)){
 			too_big = true;
 		}
@@ -97,11 +98,8 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 
 	@Override
 	public Integer visit(Choice choice) {
-		ArrayList<Integer> len = new ArrayList<Integer>();
-		for(Expression exp : choice.getChoices()){
-			len.add(exp.accept(this));
-		}
-		return Collections.min(len);
+		assert false: "Expressions may not have a choice";
+		throw new UnsupportedOperationException();
 	}
 	
 	public void init(){
@@ -124,22 +122,16 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 					too_big = false;
 					int temp = sum;
 					temp += exp.accept(this);
-					if(!too_big && temp != this.rlen.get(n).getProdValue(exp)){
+					if(!too_big && temp < this.rlen.get(n).getProdValue(exp)){
 						this.rlen.get(n).updateValue(exp, temp);
-					}	
-				}
-				Map<Expression, Integer> min = this.rlen.get(n).findMin();
-				Entry<Expression, Integer> entry = min.entrySet().iterator().next();
-				Expression shortest = entry.getKey();
-				int minLength = entry.getValue(); 
-				if(!(minLength < 0) && (minLength != maxInt)){
-					if(minLength < this.slen.get(n)){
-						this.shortest.put(n, shortest);
-						this.slen.put(n, minLength);
-						change = true;
+						if(temp < this.slen.get(n)){
+							this.shortest.put(n, exp);
+							this.slen.put(n, temp);
+							change = true;
+						}
 					}
-				}	
+				}
 			}
-		}		
+		}
 	}
 }

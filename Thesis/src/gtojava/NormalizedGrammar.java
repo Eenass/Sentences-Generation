@@ -21,10 +21,11 @@ public class NormalizedGrammar implements Visitor<Expression>{
 
 	private void normalize() {
 		for(Nonterminal n : this.grammar.getNonterminals()){
+			Expression result = this.grammar.getExpression(n).accept(this);
 			if(n.equals(this.grammar.getStartSymbol().entrySet().iterator().next().getKey())){
-				start.put(n, this.grammar.getExpression(n).accept(this));
+				start.put(n, result);
 			}
-			temp.put(n, this.grammar.getExpression(n).accept(this));
+			temp.put(n, result);
 			temp.putAll(newRules);
 		}
 		this.normalizedGrammar.setGrammarMap(temp);
