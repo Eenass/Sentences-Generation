@@ -1,15 +1,15 @@
 package purdom;
 
-import gtojava.Choice;
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.Sequence;
-import gtojava.Star;
-import gtojava.Terminal;
-import gtojava.Visitor;
+import grammarDatastructure.Choice;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.Sequence;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
+import grammarDatastructure.Visitor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +20,11 @@ public class Productions implements Visitor<List<Expression>>{
 
 	private Expression expr;
 	private List<Expression> prodList;
+	private boolean bc;
 	
-	public Productions(Expression expr) {
+	public Productions(Expression expr, boolean bc) {
 		this.expr = expr;
+		this.bc = bc;
 		this.prodList = this.expr.accept(this);
 	}
 
@@ -42,6 +44,9 @@ public class Productions implements Visitor<List<Expression>>{
 		List<Expression> opts = new ArrayList<Expression>();
 		for(Expression exp : list){
 			opts.add(new Optional(exp));
+			if(this.bc){
+				opts.add(new Empty());
+			}
 		}
 		return opts;
 	}
@@ -52,6 +57,9 @@ public class Productions implements Visitor<List<Expression>>{
 		List<Expression> stars = new ArrayList<Expression>();
 		for(Expression exp : list){
 			stars.add(new Star(exp));
+			if(this.bc){
+				stars.add(new Empty());
+			}
 		}
 		return stars;
 	}
@@ -61,7 +69,14 @@ public class Productions implements Visitor<List<Expression>>{
 		List<Expression> list = plus.getExpr().accept(this);
 		List<Expression> pluses = new ArrayList<Expression>();
 		for(Expression exp : list){
-			pluses.add(new Plus(exp));
+			Plus plus2 = new Plus(exp);
+			pluses.add(plus2);
+			if(this.bc){
+				Sequence seq = new Sequence();
+				seq.addExpr(plus2);
+				seq.addExpr(plus2);
+				pluses.add(seq);
+			}
 		}
 		return pluses;
 	}

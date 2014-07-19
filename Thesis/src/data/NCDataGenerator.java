@@ -1,11 +1,12 @@
 package data;
 
-import gtojava.Expression;
-import gtojava.Grammar;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.NormalizedGrammar;
-import gtojava.ProductionRule;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Grammar;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.NormalizedGrammar;
+import grammarDatastructure.ProductionRule;
+import grammarDatastructure.Terminal;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,12 +14,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.Number;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 import purdom.ProductionsMark;
 import purdom.ProductionsRLEN;
 import purdom.PurdomPhaseOne;
@@ -34,7 +43,7 @@ public class NCDataGenerator {
 	public static void main(String[] args) throws IOException {
 		ASTPrinter printer = new ASTPrinter();
 		List<String> inputFiles = new ArrayList<String>();
-		String targetDir = "..\\Thesis\\src\\testGrammar";
+		String targetDir = "..\\Thesis\\src\\extractedTestGrammar";
 		File dir = new File(targetDir);
 		File[] files = dir.listFiles();
 		for (File f: files){
@@ -51,14 +60,19 @@ public class NCDataGenerator {
 			Grammar grammar = astbuilder.buildGrammar();
 			GrammarMap grammarMap = new GrammarMap(grammar);
 			NormalizedGrammar NGrammar = new NormalizedGrammar(grammarMap);
-			Map<Nonterminal, Expression> startSymbol = NGrammar.getNormalizedGrammar().getStartSymbol();
-			
-			Accessible filter = new Accessible(NGrammar.getNormalizedGrammar(), startSymbol);
+			GrammarMap normalizedGrammar = NGrammar.getNormalizedGrammar();
+			Map<Nonterminal, Expression> startSymbol = normalizedGrammar.getStartSymbol();
+			Entry<Nonterminal, Expression> entryS = startSymbol.entrySet().iterator().next();
+			Nonterminal startKey = entryS.getKey();
+			System.out.println("start symbol " + startKey.getName());
+
+			Accessible filter = new Accessible(normalizedGrammar, startSymbol);
 
 			GrammarMap filteredGrammar = filter.getFilteredGrammar();
 			startSymbol = filteredGrammar.getStartSymbol();
 			int grammarSize = filteredGrammar.getNonterminals().size();
-			PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar);
+			Map<Nonterminal, List<Terminal>> emptyMap = new HashMap<Nonterminal, List<Terminal>>();
+			PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar, emptyMap, false);
 			purdom1.phaseOne();
 			Map<Nonterminal, Integer> slen = purdom1.getSlen();
 			Map<Nonterminal, ProductionsRLEN> rlen = purdom1.getRlen();
@@ -80,7 +94,7 @@ public class NCDataGenerator {
 				if(prev.containsKey(n)){
 					if(!covered.get(n)){
 						i++;
-//						System.out.println(n.getName());
+//						System.out.println(n.getName() + " " + prev.get(n).getRuleName().getName());
 					}
 				}	
 			}
@@ -125,38 +139,50 @@ public class NCDataGenerator {
 	//		for(Nonterminal n: once.keySet()){
 	//			System.out.println(n.getName() + " " + once.get(n).accept(printer));
 	//		}
-//			reportResults(filePath, grammarSize, productions, output, i, h);
+			reportResults(filePath, grammarSize, productions, output, i, h);
 		}
-//		printResultsToFile();
+		printResultsToFile("NC_PC_Coverage.txt");
 		
 	}
 
-//	private static void printResultsToFile() {
-//		File file = new File("..\\Thesis\\src\\testResults\\" + "Coverage");
-//		FileWriter fw;
-//		try {
-//			fw = new FileWriter(file, true);
-//			PrintWriter printer = new PrintWriter(fw);
-//			printer.append(buffer);
-//			printer.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	static void printResultsToFile(String name) {
+		File file = new File("..\\Thesis\\src\\testResults\\" + name);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, true);
+			PrintWriter printer = new PrintWriter(fw);
+			printer.append(buffer);
+			printer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
-//	private static void reportResults(String filePath,
-//			int grammarSize, Set<Expression> productions, List<List<String>> output, int i,
-//			int h) {
-//		File f = new File(filePath);
-//		String fileName = f.getName().replace("Extracted", "");
-////		System.out.println((grammarSize-i)/grammarSize + " " + ((double)(productions.size()-h))/productions.size());
-//		double ncCoverage = (((double)(grammarSize-i))/grammarSize)* 100;
-//		double pcCoverage = (((double)(productions.size()-h))/productions.size())* 100;
-//		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t \t" + output.size() + " \t " + ncCoverage+"%" + 
-//		" \t " + pcCoverage+"%";
-//		buffer.append(s +"\n");
-//		
-//	}
+	static void reportResults(String filePath,
+			int grammarSize, Set<Expression> productions, List<List<String>> output, int i,
+			int h) {
+		File f = new File(filePath);
+		String fileName = f.getName().replace("Extracted", "");
+//		System.out.println((grammarSize-i)/grammarSize + " " + ((double)(productions.size()-h))/productions.size());
+		double ncCoverage = (((double)(grammarSize-i))/grammarSize)* 100;
+		double pcCoverage = (((double)(productions.size()-h))/productions.size())* 100;
+		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t" + output.size() + " \t " + ncCoverage+"%" + 
+		" \t " + pcCoverage+"%";
+		buffer.append(s +"\n");
+		
+	}
+	
+	static void printToExcel() throws IOException, RowsExceededException, WriteException{
+		WritableWorkbook workbook = Workbook.createWorkbook(new File("output.xls"));
+
+		WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+		
+		Label label = new Label(0, 2, "A label record"); 
+		sheet.addCell(label); 
+
+		Number number = new Number(3, 4, 3.1459); 
+		sheet.addCell(number);
+	}
 
 }

@@ -1,5 +1,0 @@
-( this , this ) {
-static {
-this ;
-}
-}

@@ -1,16 +1,14 @@
 package purdom;
 
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.Nonterminal;
-import gtojava.ProductionRule;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.ProductionRule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import buildAST.ASTPrinter;
 
 public class PurdomPhaseTwo {
 	
@@ -80,9 +78,7 @@ public class PurdomPhaseTwo {
 						if(sum < this.dlen.get(non)){
 							change = true;
 							this.dlen.put(non, sum);
-//							if(!non.equals(n1)){
 							this.prev.put(non, new ProductionRule(n, exp));
-//							}
 						}
 					}
 				}

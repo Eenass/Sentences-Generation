@@ -1,15 +1,15 @@
 package data;
 
-import gtojava.Expression;
-import gtojava.Grammar;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.NormalizedGrammar;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.ProductionRule;
-import gtojava.Star;
-import gtojava.Terminal;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Grammar;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.NormalizedGrammar;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.ProductionRule;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,11 +43,17 @@ public class NonterminalCoverage {
 		
 		NonterminalsSentences sentenceGen = new NonterminalsSentences(normalizedGrammar);
 		Map<Nonterminal, List<List<String>>> sentences = sentenceGen.getOutput();
+		Map<Nonterminal, List<Terminal>> terminalString = new HashMap<Nonterminal, List<Terminal>>();
 		
 		for(Nonterminal n : sentences.keySet()){				
-			System.out.println(n.getName() + " " + sentences.get(n).size() ); //+  " : " + sentences.get(n).toString());
+//			System.out.println(n.getName() + " " + sentences.get(n).size() ); //+  " : " + sentences.get(n).toString());
+			List<Terminal> temp = new ArrayList<Terminal>();
+			for(List<String> l : sentences.get(n)){
+				temp.add(buildString(l));
+			}
+			terminalString.put(n, temp);
 		}
-				
+		
 //		PurdomPhaseOne purdom1 = new PurdomPhaseOne(normalizedGrammar);
 //		purdom1.phaseOne();
 //		Map<Nonterminal, Integer> slen = purdom1.getSlen();
@@ -91,5 +97,11 @@ public class NonterminalCoverage {
 //		filteredGrammar.getGrammarMap().putAll(normalizedGrammar.getStartSymbol());
 //		return filteredGrammar;
 	}
-
+	static Terminal buildString(List<String> strings){
+		StringBuilder sb = new StringBuilder();
+		for(String s: strings){
+			sb.append(s);
+		}
+		return new Terminal(sb.toString());
+	}
 }

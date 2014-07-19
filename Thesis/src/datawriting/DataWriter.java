@@ -1,6 +1,6 @@
 package datawriting;
 
-import gtojava.Nonterminal;
+import grammarDatastructure.Nonterminal;
 
 import java.io.File;
 import java.io.IOException;

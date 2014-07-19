@@ -1,49 +1,55 @@
 package buildAST;
 
-import grammarParser.ANTLRv4Parser.AltListContext;
-import grammarParser.ANTLRv4Parser.AlternativeContext;
-import grammarParser.ANTLRv4Parser.AtomContext;
-import grammarParser.ANTLRv4Parser.BlockContext;
-import grammarParser.ANTLRv4Parser.BlockSetContext;
-import grammarParser.ANTLRv4Parser.BlockSuffixContext;
-import grammarParser.ANTLRv4Parser.EbnfContext;
-import grammarParser.ANTLRv4Parser.EbnfSuffixContext;
-import grammarParser.ANTLRv4Parser.ElementContext;
-import grammarParser.ANTLRv4Parser.ElementsContext;
-import grammarParser.ANTLRv4Parser.GrammarSpecContext;
-import grammarParser.ANTLRv4Parser.IdContext;
-import grammarParser.ANTLRv4Parser.LabeledAltContext;
-import grammarParser.ANTLRv4Parser.LabeledElementContext;
-import grammarParser.ANTLRv4Parser.LabeledLexerElementContext;
-import grammarParser.ANTLRv4Parser.LexerAltContext;
-import grammarParser.ANTLRv4Parser.LexerAltListContext;
-import grammarParser.ANTLRv4Parser.LexerAtomContext;
-import grammarParser.ANTLRv4Parser.LexerBlockContext;
-import grammarParser.ANTLRv4Parser.LexerElementContext;
-import grammarParser.ANTLRv4Parser.LexerElementsContext;
-import grammarParser.ANTLRv4Parser.LexerRuleBlockContext;
-import grammarParser.ANTLRv4Parser.LexerRuleContext;
-import grammarParser.ANTLRv4Parser.NotSetContext;
-import grammarParser.ANTLRv4Parser.ParserRuleSpecContext;
-import grammarParser.ANTLRv4Parser.RangeContext;
-import grammarParser.ANTLRv4Parser.RuleAltListContext;
-import grammarParser.ANTLRv4Parser.RuleBlockContext;
-import grammarParser.ANTLRv4Parser.RuleSpecContext;
-import grammarParser.ANTLRv4Parser.RulerefContext;
-import grammarParser.ANTLRv4Parser.SetElementContext;
-import grammarParser.ANTLRv4Parser.TerminalContext;
-import grammarParser.ANTLRv4ParserBaseVisitor;
-import gtojava.Choice;
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.Grammar;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.ProductionRule;
-import gtojava.Sequence;
-import gtojava.Star;
-import gtojava.Terminal;
+import grammarDatastructure.Choice;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Grammar;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.ProductionRule;
+import grammarDatastructure.Sequence;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import antlrGrammarParser.ANTLRv4ParserBaseVisitor;
+import antlrGrammarParser.ANTLRv4Parser.AltListContext;
+import antlrGrammarParser.ANTLRv4Parser.AlternativeContext;
+import antlrGrammarParser.ANTLRv4Parser.AtomContext;
+import antlrGrammarParser.ANTLRv4Parser.BlockContext;
+import antlrGrammarParser.ANTLRv4Parser.BlockSetContext;
+import antlrGrammarParser.ANTLRv4Parser.BlockSuffixContext;
+import antlrGrammarParser.ANTLRv4Parser.EbnfContext;
+import antlrGrammarParser.ANTLRv4Parser.EbnfSuffixContext;
+import antlrGrammarParser.ANTLRv4Parser.ElementContext;
+import antlrGrammarParser.ANTLRv4Parser.ElementsContext;
+import antlrGrammarParser.ANTLRv4Parser.GrammarSpecContext;
+import antlrGrammarParser.ANTLRv4Parser.IdContext;
+import antlrGrammarParser.ANTLRv4Parser.LabeledAltContext;
+import antlrGrammarParser.ANTLRv4Parser.LabeledElementContext;
+import antlrGrammarParser.ANTLRv4Parser.LabeledLexerElementContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerAltContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerAltListContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerAtomContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerBlockContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerElementContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerElementsContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerRuleBlockContext;
+import antlrGrammarParser.ANTLRv4Parser.LexerRuleContext;
+import antlrGrammarParser.ANTLRv4Parser.NotSetContext;
+import antlrGrammarParser.ANTLRv4Parser.ParserRuleSpecContext;
+import antlrGrammarParser.ANTLRv4Parser.RangeContext;
+import antlrGrammarParser.ANTLRv4Parser.RuleAltListContext;
+import antlrGrammarParser.ANTLRv4Parser.RuleBlockContext;
+import antlrGrammarParser.ANTLRv4Parser.RuleSpecContext;
+import antlrGrammarParser.ANTLRv4Parser.RulerefContext;
+import antlrGrammarParser.ANTLRv4Parser.SetElementContext;
+import antlrGrammarParser.ANTLRv4Parser.TerminalContext;
 
 public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	
@@ -56,11 +62,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Grammar getGrammar() {
 		return grammar;
 	}
-
-	public void setGrammar(Grammar grammar) {
-		this.grammar = grammar;
-	}
-	
 
 	@Override
 	public Expression visitGrammarSpec(GrammarSpecContext ctx) {
@@ -87,7 +88,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitParserRuleSpec(ParserRuleSpecContext ctx) {
 		Nonterminal n = new Nonterminal(ctx.RULE_REF().getText());
 		Expression exp = ctx.ruleBlock().accept(this);
-		grammar.addProductionRule(new ProductionRule(n, exp));
+		ProductionRule rule = new ProductionRule(n, exp);
+		this.grammar.addProductionRule(rule);
 		return exp;
 	}
 	
@@ -183,7 +185,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else if(ctx.ACTION() != null){
 			Terminal t = new Terminal(ctx.ACTION().getText());
-			grammar.addTerminal(t);
 			result = new Optional(t);
 		}
 		return result;
@@ -239,15 +240,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	}
 	@Override
 	public Expression visitRange(RangeContext ctx) {
-		Sequence sequence = new Sequence();
 		Terminal t1 = new Terminal(ctx.STRING_LITERAL(0).getText());
-		grammar.addTerminal(t1);
-		sequence.addExpr(t1);
-		sequence.addExpr(new Terminal(ctx.RANGE().getText())); 
-		Terminal t2 = new Terminal(ctx.STRING_LITERAL(1).getText());
-		grammar.addTerminal(t2);
-		sequence.addExpr(t2);
-		return sequence;
+		return t1;
 	}
 	
 	@Override
@@ -263,7 +257,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else if(ctx.STRING_LITERAL() != null){
 			Terminal t = new Terminal(ctx.STRING_LITERAL().getText());
-			grammar.addTerminal(t);
 			result = t;
 		}
 		return result;
@@ -294,7 +287,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitNotSet(NotSetContext ctx) {
 		Sequence sequence = new Sequence();
 		Terminal t = new Terminal(ctx.NOT().getText());
-		grammar.addTerminal(t);
 		if(ctx.setElement() != null){
 			sequence.addExpr(t);
 			sequence.addExpr(ctx.setElement().accept(this));
@@ -314,17 +306,71 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		if(ctx.STRING_LITERAL() != null){
 			Terminal t = new Terminal(ctx.STRING_LITERAL().getText());
-			grammar.addTerminal(t);
 			result = t;
 		}
 		else if(ctx.range() != null){
 			result = ctx.range().accept(this);
 		}
 		else if(ctx.LEXER_CHAR_SET() != null){
-			Terminal t = new Terminal(ctx.LEXER_CHAR_SET().getText());
-			grammar.addTerminal(t);
+			String s = reduceCharSet(ctx.LEXER_CHAR_SET());
+			Terminal t = new Terminal(s);
 			result = t;
 		}
+		return result;
+	}
+
+	private String reduceCharSet(TerminalNode lexer_CHAR_SET) {
+		String text = lexer_CHAR_SET.getText();
+		Pattern p = Pattern.compile("[a-zA-Z]");
+		Matcher m = p.matcher(text);
+		System.out.println("reduceCharSet " + text + text.length());
+		String result = "";
+		if(text.contains("\\u") && text.contains("-")){
+			String[] l = text.split("-", 2);
+			result = "\'" + l[0].substring(1) + "\'";
+		}
+		else if(text.contains("\\u") && text.length() == 8){
+			System.out.println("when one unicode");
+			String[] l = text.split("]", 2);
+			result = "\'" + l[0].substring(1) + "\'";
+		}
+		else if(text.contains("\"\\") && !m.find()){
+			System.out.println("string");
+			result = "\'" + "\"\\\\" + "\'";
+		}
+		else if(text.contains("\'\\") && !m.find()){
+			System.out.println("char");
+			result = "\'" + "\\'\\\\" + "\'";
+		}
+		else if(text.contains("\\")){
+			System.out.println("new line");
+			if(text.contains("\\n")){
+				result = "\'"+  "\\n" + "\'";
+			}
+			else if(text.contains("\\r")){
+				result = "\'" + "\\r" + "\'";
+			}
+			else if(text.contains("\\t")){
+				result = "\'" + "\\t" + "\'";
+			}
+			else if(text.contains("\\W")){
+				result = "'$'";
+			}
+			else{
+				String[] l = text.split("");
+				System.out.println(l.length);
+				if(l[2].equals("\'")){
+					l[2] = "\\\'";
+				}
+				result = "\'" + l[2] + "\'";
+			}
+		}
+		else{
+			String[] l = text.split("");
+			System.out.println(l.length);
+			result = "\'" + l[2] + "\'";
+		}
+		System.out.println("to be returned " + result);
 		return result;
 	}
 
@@ -333,7 +379,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Choice choice = new Choice();
 		Sequence sequence = new Sequence();
 		Terminal t1 = new Terminal(ctx.LPAREN().getText());
-		grammar.addTerminal(t1);
 		sequence.addExpr(t1);
 		if(ctx.setElement().size() > 1){
 			for(int i = 0; i < ctx.setElement().size(); i++){
@@ -345,7 +390,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			sequence.addExpr(ctx.setElement(0).accept(this));
 		}
 		Terminal t2 = new Terminal(ctx.RPAREN().getText());
-		grammar.addTerminal(t2);
 		sequence.addExpr(t2);
 		return sequence;
 	}
@@ -356,12 +400,10 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			Terminal t = new Terminal(ctx.ASSIGN().getText());
-			grammar.addTerminal(t);
 			sequence.addExpr(t);
 		}
 		else if(ctx.PLUS_ASSIGN() != null){
 			Terminal t = new Terminal(ctx.PLUS_ASSIGN().getText());
-			grammar.addTerminal(t);
 			sequence.addExpr(t);
 		}
 		if(ctx.atom() != null){
@@ -379,7 +421,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Nonterminal n = new Nonterminal(ctx.TOKEN_REF().getText());
 		Expression result = new Empty();
 		result = ctx.lexerRuleBlock().accept(this);
-		grammar.addProductionRule(new ProductionRule(n, result));
+		ProductionRule rule = new ProductionRule(n, result);
+		this.grammar.addProductionRule(rule);
 		return result;
 	}
 	
@@ -394,7 +437,10 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Expression result = new Empty();
 		if(ctx.lexerAlt().size() > 1){
 			for(int i = 0; i < ctx.lexerAlt().size(); i++){
-				choice.addExpr(ctx.lexerAlt(i).accept(this));
+				Expression accept = ctx.lexerAlt(i).accept(this);
+				if(!accept.getClass().equals(Empty.class)){
+					choice.addExpr(accept);
+				}	
 			}
 			result = choice;
 		}
@@ -415,7 +461,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		Sequence sequence = new Sequence();
 		if(ctx.lexerElement().size() > 1){
 			for(int i = 0; i < ctx.lexerElement().size(); i++){
-				sequence.addExpr(ctx.lexerElement(i).accept(this));
+				Expression accept = ctx.lexerElement(i).accept(this);
+				sequence.addExpr(accept);
 			}
 			result = sequence;
 		}
@@ -432,13 +479,13 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			 if(ctx.ebnfSuffix() != null){
 				Expression temp = ctx.ebnfSuffix().accept(this);
 				if(temp.getClass() == (new Optional().getClass())){
-					result = new Optional(ctx.labeledLexerElement().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Star().getClass())){
-					result = new Star(ctx.labeledLexerElement().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Plus().getClass())){
-					result = new Plus(ctx.labeledLexerElement().accept(this));
+					result = ctx.labeledLexerElement().accept(this);
 				}
 			}
 			else{
@@ -449,13 +496,13 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			 if(ctx.ebnfSuffix() != null){
 				Expression temp = ctx.ebnfSuffix().accept(this);
 				if(temp.getClass() == (new Optional().getClass())){
-					result = new Optional(ctx.lexerAtom().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Star().getClass())){
-					result = new Star(ctx.lexerAtom().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Plus().getClass())){
-					result = new Plus(ctx.lexerAtom().accept(this));
+					result = ctx.lexerAtom().accept(this);
 				}
 			}
 			else{
@@ -466,13 +513,13 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			 if(ctx.ebnfSuffix() != null){
 				Expression temp = ctx.ebnfSuffix().accept(this);
 				if(temp.getClass() == (new Optional().getClass())){
-					result = new Optional(ctx.lexerBlock().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Star().getClass())){
-					result = new Star(ctx.lexerBlock().accept(this));
+					result = new Empty();
 				}
 				else if(temp.getClass() == (new Plus().getClass())){
-					result = new Plus(ctx.lexerBlock().accept(this));
+					result = ctx.lexerBlock().accept(this);
 				}
 			}
 			else{
@@ -492,12 +539,10 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			Terminal t1 = new Terminal(ctx.ASSIGN().getText());
-			grammar.addTerminal(t1);
 			sequence.addExpr(t1);
 		}
 		else if(ctx.PLUS_ASSIGN() != null){
 			Terminal t2 = new Terminal(ctx.PLUS_ASSIGN().getText());
-			grammar.addTerminal(t2);
 			sequence.addExpr(t2);
 		}
 		if(ctx.lexerAtom() != null){
@@ -525,13 +570,12 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			result = ctx.notSet().accept(this);
 		}
 		else if(ctx.LEXER_CHAR_SET() != null){
-			Terminal t = new Terminal(ctx.LEXER_CHAR_SET().getText());
-			grammar.addTerminal(t);
+			String s = reduceCharSet(ctx.LEXER_CHAR_SET());
+			Terminal t = new Terminal(s);
 			result = t;
 		}
 		else if(ctx.DOT() != null){
 			Terminal t = new Terminal(ctx.DOT().getText());
-			grammar.addTerminal(t);
 			result = t;
 		}
 		return result;
@@ -541,11 +585,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitLexerBlock(LexerBlockContext ctx) {
 		Sequence sequence = new Sequence();
 		Terminal t1 = new Terminal(ctx.LPAREN().getText());
-		grammar.addTerminal(t1);
 		sequence.addExpr(t1);
 		sequence.addExpr(ctx.lexerAltList().accept(this));
 		Terminal t2 = new Terminal(ctx.RPAREN().getText());
-		grammar.addTerminal(t2);
 		sequence.addExpr(t2);
 		return sequence;
 	}
@@ -566,11 +608,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitBlock(BlockContext ctx) {
 		Sequence sequence = new Sequence();
 		Terminal t1 = new Terminal(ctx.LPAREN().getText());
-		grammar.addTerminal(t1);
 		sequence.addExpr(t1);
 		sequence.addExpr(ctx.altList().accept(this));
 		Terminal t2 = new Terminal(ctx.RPAREN().getText());
-		grammar.addTerminal(t2);
 		sequence.addExpr(t2);
 		return sequence;
 	}

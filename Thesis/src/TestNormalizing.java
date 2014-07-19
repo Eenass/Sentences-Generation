@@ -1,7 +1,7 @@
-import gtojava.Grammar;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.NormalizedGrammar;
+import grammarDatastructure.Grammar;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.NormalizedGrammar;
 
 import java.io.IOException;
 

@@ -6,5 +6,7 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Users/E. Butrus/Downloads/xeger-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="C:/Users/E. Butrus/Downloads/automaton.jar"/>
+	<classpathentry kind="lib" path="C:/antlr-4.2/lib/jexcelapi/jxl.jar"/>
+	<classpathentry kind="lib" path="C:/antlr-4.2/lib/jexcelapi/build/JFlex.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

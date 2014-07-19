@@ -1,4 +1,0 @@
-;
-native @ interface y h {
-;
-}

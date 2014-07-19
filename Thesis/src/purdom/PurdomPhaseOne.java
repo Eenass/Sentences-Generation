@@ -1,22 +1,19 @@
 package purdom;
 
-import gtojava.Choice;
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.Sequence;
-import gtojava.Star;
-import gtojava.Terminal;
-import gtojava.Visitor;
+import grammarDatastructure.Choice;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.Sequence;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
+import grammarDatastructure.Visitor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class PurdomPhaseOne implements Visitor<Integer>{
 	
@@ -26,12 +23,11 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	private Map<Nonterminal, ProductionsRLEN> rlen;
 	private Map<Nonterminal, Expression> shortest;
 	private boolean too_big = false;
+	private boolean bc;
 
-	public PurdomPhaseOne() {
-	}
-	
-	public PurdomPhaseOne(GrammarMap grammar) {
+	public PurdomPhaseOne(GrammarMap grammar, boolean bc) {
 		this.grammar = grammar;
+		this.bc = bc;
 		this.slen = new LinkedHashMap<Nonterminal, Integer>();
 		this.rlen = new LinkedHashMap<Nonterminal, ProductionsRLEN>();
 		this.shortest = new LinkedHashMap<Nonterminal, Expression>();
@@ -56,7 +52,6 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 
 	@Override
 	public Integer visit(Nonterminal nonterminal) {
-//		System.out.println("nonterminal " + nonterminal.getName());
 		if(this.slen.get(nonterminal).equals(maxInt)){
 			too_big = true;
 		}
@@ -106,7 +101,7 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 		for(Nonterminal n : grammar.getNonterminals()){
 			this.slen.put(n, maxInt);
 			this.shortest.put(n, new Empty());
-			ProductionsRLEN p = new ProductionsRLEN(grammar.getExpression(n));
+			ProductionsRLEN p = new ProductionsRLEN(grammar.getExpression(n), this.bc);
 			this.rlen.put(n, p);
 		}
 	}

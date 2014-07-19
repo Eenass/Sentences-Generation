@@ -1,9 +1,6 @@
 package buildAST;
 
-import grammarParser.ANTLRv4Lexer;
-import grammarParser.ANTLRv4Parser;
-import gtojava.Expression;
-import gtojava.Grammar;
+import grammarDatastructure.Grammar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,6 +9,9 @@ import java.io.InputStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import antlrGrammarParser.ANTLRv4Lexer;
+import antlrGrammarParser.ANTLRv4Parser;
 
 public class ASTBuilder {
 	

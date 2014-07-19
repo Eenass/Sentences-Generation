@@ -1,3 +1,0 @@
-finally {
-throw this ;
-}

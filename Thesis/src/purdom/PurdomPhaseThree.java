@@ -1,14 +1,14 @@
 package purdom;
 
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.ProductionRule;
-import gtojava.Star;
-import gtojava.Terminal;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.ProductionRule;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class PurdomPhaseThree {
 	protected ASTPrinter printer = new ASTPrinter();
 	protected RepitionCleaner cleaner = new RepitionCleaner();
 	private Map<Expression, Boolean> productionCoverage;
-	
+
 	public PurdomPhaseThree(GrammarMap grammar, Map<Nonterminal, ProductionRule> prev,
 			Map<Nonterminal, Expression> shortest,Map<Nonterminal, ProductionsRLEN> rlen) {
 		this.grammar = grammar;
@@ -148,19 +148,17 @@ public class PurdomPhaseThree {
 				Expression e = stack.pop();
 				if(e.getClass() == Terminal.class){
 					String s = "";
-					if(((Terminal)e).getTerminal().contains("[") && ((Terminal)e).getTerminal().contains("]")){
-						if(((Terminal)e).getTerminal().contains("\\u")){
-							String[] l = ((Terminal)e).getTerminal().split("-", 2);
-							s = l[0].substring(1);
-						}	
-						if(!stack.isEmpty() && stack.peek().getClass() == Terminal.class && ((Terminal)stack.peek()).getTerminal().equals("~")){
-							output.add(s);
-							stack.pop();
-						}
-						else{
-							String[] l = ((Terminal)e).getTerminal().split("");
-							output.add(l[2]);
-						}
+					if(((Terminal)e).getTerminal().equals("\"\\") && !stack.isEmpty() &&
+							stack.peek().getClass() == Terminal.class && ((Terminal)stack.peek()).getTerminal().equals("~")){
+						s = "h";
+						output.add(s);
+						stack.pop();
+					}
+					else if(((Terminal)e).getTerminal().equals("\'\\") && !stack.isEmpty() &&
+							stack.peek().getClass() == Terminal.class && ((Terminal)stack.peek()).getTerminal().equals("~")){
+						s = "'k'";
+						output.add(s);
+						stack.pop();
 					}
 					else if(((Terminal)e).getTerminal().charAt(0) == '\''){
 						output.add(((Terminal)e).getTerminal());
@@ -208,7 +206,7 @@ public class PurdomPhaseThree {
 					this.once.put(nt, ready);
 				}
 				else{
-					loadONCE();					
+					loadONCE();		
 					for(Nonterminal i : this.grammar.getNonterminals()){
 						if(!i.equals(start) && !containsONCEcase(this.once.get(i))){
 							Nonterminal j = i;

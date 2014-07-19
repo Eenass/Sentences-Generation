@@ -1,0 +1,11 @@
+COMMENTLINE=5
+EOL=6
+TEXT=7
+T__1=3
+T__0=4
+T__3=1
+T__2=2
+';'=4
+'='=3
+'##gff-version 3\n'=2
+'\t'=1

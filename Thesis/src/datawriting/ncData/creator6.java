@@ -1,5 +1,0 @@
-boolean ( this , this ) {
-static {
-;
-}
-}

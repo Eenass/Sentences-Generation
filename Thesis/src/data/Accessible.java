@@ -1,24 +1,22 @@
 package data;
 
-import gtojava.Choice;
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.GrammarMap;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.Sequence;
-import gtojava.Star;
-import gtojava.Terminal;
-import gtojava.Visitor;
+import grammarDatastructure.Choice;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.GrammarMap;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.Sequence;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
+import grammarDatastructure.Visitor;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import buildAST.ASTPrinter;
 
 public class Accessible implements Visitor<Boolean>{
 
@@ -46,8 +44,6 @@ public class Accessible implements Visitor<Boolean>{
 	private void findNonterminals() {
 		Entry<Nonterminal, Expression> entry = this.startSymbol.entrySet().iterator().next();
 		Expression value = entry.getValue();
-//		Nonterminal key = entry.getKey();
-//		System.out.println("start " + key.getName() + " real start " + ((Nonterminal)value).getName());
 		value.accept(this);
 		Map<Nonterminal, Expression> rules = new LinkedHashMap<Nonterminal, Expression>();
 		rules.putAll(this.startSymbol);
@@ -65,7 +61,6 @@ public class Accessible implements Visitor<Boolean>{
 
 	@Override
 	public Boolean visit(Nonterminal nonterminal) {
-//		System.out.println("to be added " + nonterminal.getName());
 		if(!this.accessible.contains(nonterminal)){
 			this.accessible.add(nonterminal);
 			this.grammar.getExpression(nonterminal).accept(this);

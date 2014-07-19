@@ -10,7 +10,6 @@ import java.util.List;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import antlr.JavaParser;
 import extractedGrammar.ExtractedJavaLexer;
 import extractedGrammar.ExtractedJavaParser;
 

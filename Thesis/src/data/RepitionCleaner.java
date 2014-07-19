@@ -1,15 +1,15 @@
 package data;
 
-import gtojava.Choice;
-import gtojava.Empty;
-import gtojava.Expression;
-import gtojava.Nonterminal;
-import gtojava.Optional;
-import gtojava.Plus;
-import gtojava.Sequence;
-import gtojava.Star;
-import gtojava.Terminal;
-import gtojava.Visitor;
+import grammarDatastructure.Choice;
+import grammarDatastructure.Empty;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Optional;
+import grammarDatastructure.Plus;
+import grammarDatastructure.Sequence;
+import grammarDatastructure.Star;
+import grammarDatastructure.Terminal;
+import grammarDatastructure.Visitor;
 
 public class RepitionCleaner implements Visitor<Expression> {
 

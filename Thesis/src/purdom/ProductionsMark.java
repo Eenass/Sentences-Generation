@@ -1,15 +1,13 @@
 package purdom;
 
-import gtojava.Expression;
+import grammarDatastructure.Expression;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ProductionsMark {
 
-//	private Expression expr;
 	private Set<Expression> set;
 	private Map<Expression, Boolean> prodsMark;
 	
@@ -19,7 +17,6 @@ public class ProductionsMark {
 	}
 
 	public void markProductions(){
-//		List<Expression> prods = new Productions(expr).getProdList();
 		for(Expression e : this.set){
 			this.prodsMark.put(e, false);
 		}

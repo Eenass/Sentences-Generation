@@ -1,6 +1,8 @@
 package purdom;
 
-import gtojava.Expression;
+import grammarDatastructure.Expression;
+import grammarDatastructure.Nonterminal;
+import grammarDatastructure.Terminal;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,10 +14,12 @@ import java.util.Set;
 public class ProductionsRLEN {
 
 	private Expression expr;
+	private boolean bc;
 	private Map<Expression, Integer> prodsRlen;
 	
-	public ProductionsRLEN(Expression expr) {
+	public ProductionsRLEN(Expression expr, boolean bc) {
 		this.expr = expr;
+		this.bc = bc;
 		this.prodsRlen = new LinkedHashMap<Expression, Integer>();
 		findProductions();
 	}
@@ -25,7 +29,7 @@ public class ProductionsRLEN {
 	}
 
 	public void findProductions(){
-		List<Expression> prods = new Productions(expr).getProdList();
+		List<Expression> prods = new Productions(expr, this.bc).getProdList();
 		for(Expression e : prods){
 			this.prodsRlen.put(e, Integer.MAX_VALUE);
 		}
