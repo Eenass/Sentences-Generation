@@ -8,7 +8,15 @@
 /testSetGrammar
 /antlrGrammarParser
 /moreGrammar
-/purdom
+/testResults
+/.gitignore
+/.gitignore.txt
+/buildAST
 /data
 /datawriting
-/testResults
+/grammarDatastructure
+/purdom
+/Extractor.class
+/Recognizer.class
+/TestNormalizing.class
+/WritingExcel.class

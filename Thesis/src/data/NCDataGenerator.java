@@ -71,8 +71,8 @@ public class NCDataGenerator {
 			GrammarMap filteredGrammar = filter.getFilteredGrammar();
 			startSymbol = filteredGrammar.getStartSymbol();
 			int grammarSize = filteredGrammar.getNonterminals().size();
-			Map<Nonterminal, List<Terminal>> emptyMap = new HashMap<Nonterminal, List<Terminal>>();
-			PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar, emptyMap, false);
+//			Map<Nonterminal, List<Terminal>> emptyMap = new HashMap<Nonterminal, List<Terminal>>();
+			PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar, false);
 			purdom1.phaseOne();
 			Map<Nonterminal, Integer> slen = purdom1.getSlen();
 			Map<Nonterminal, ProductionsRLEN> rlen = purdom1.getRlen();
@@ -114,7 +114,7 @@ public class NCDataGenerator {
 			int k = 0;
 			Set<Expression> productions = new HashSet<Expression>();
 			for(Nonterminal n : mark.keySet()){
-				k += mark.get(n).getKeys().size();
+				k += mark.get(n).getProdsMark().size();
 				productions.addAll(mark.get(n).getKeys());
 				for(Expression exp: mark.get(n).getKeys()){
 					if(!mark.get(n).getProdValue(exp)){
@@ -126,7 +126,7 @@ public class NCDataGenerator {
 	
 			Map<Expression, Boolean> productionCoverage = purdom3.getProductionCoverage();
 			System.out.println("number of generated sentences " + output.size());
-			System.out.println("covered productions " + productionCoverage.size() + " out of " + productions.size() + " j " + j);
+			System.out.println("covered productions " + productionCoverage.size() + " out of " + productions.size() + " k " + k);
 			System.out.println("Uncovered nonterminals " + i + " " + purdom2.getHasNoPrev()  + " total number of nonterminals " + (prev.size() + 1));
 			int h = 0;
 			for(Expression exp : productions){
@@ -139,7 +139,7 @@ public class NCDataGenerator {
 	//		for(Nonterminal n: once.keySet()){
 	//			System.out.println(n.getName() + " " + once.get(n).accept(printer));
 	//		}
-			reportResults(filePath, grammarSize, productions, output, i, h);
+			reportResults(filePath, grammarSize, productions, output, i, h, k);
 		}
 		printResultsToFile("NC_PC_Coverage.txt");
 		
@@ -161,14 +161,14 @@ public class NCDataGenerator {
 
 	static void reportResults(String filePath,
 			int grammarSize, Set<Expression> productions, List<List<String>> output, int i,
-			int h) {
+			int h, int k) {
 		File f = new File(filePath);
 		String fileName = f.getName().replace("Extracted", "");
 //		System.out.println((grammarSize-i)/grammarSize + " " + ((double)(productions.size()-h))/productions.size());
 		double ncCoverage = (((double)(grammarSize-i))/grammarSize)* 100;
 		double pcCoverage = (((double)(productions.size()-h))/productions.size())* 100;
 		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t" + output.size() + " \t " + ncCoverage+"%" + 
-		" \t " + pcCoverage+"%";
+		" \t " + pcCoverage+"% \t " + k;
 		buffer.append(s +"\n");
 		
 	}

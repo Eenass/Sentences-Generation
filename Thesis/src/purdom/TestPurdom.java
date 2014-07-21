@@ -19,12 +19,13 @@ import buildAST.ASTBuilder;
 import buildAST.ASTPrinter;
 import data.Accessible;
 import data.NonterminalsSentences;
+import data.UCGrammar;
 
 public class TestPurdom {
 
 	public static void main(String[] args) throws IOException{
 		ASTPrinter printer = new ASTPrinter();
-		String filePath = "..\\Thesis\\src\\extractedTestGrammar\\ExtractedAbnf.g4";
+		String filePath = "..\\Thesis\\src\\extractedTestGrammar\\ExtractedSampleGrammar.g4";
 		ASTBuilder astbuilder = new ASTBuilder(filePath);
 		Grammar grammar = astbuilder.buildGrammar();
 		GrammarMap grammarMap = new GrammarMap(grammar);
@@ -37,14 +38,15 @@ public class TestPurdom {
 		startSymbol = filteredGrammar.getStartSymbol();
 		Map<Nonterminal, List<Terminal>> sentences = new HashMap<Nonterminal, List<Terminal>>();
 		
-//		sentences = getSentences(filteredGrammar);
-//		UCGrammar ucGrammar = new UCGrammar(filteredGrammar, sentences);
-//		filteredGrammar = ucGrammar.getOutput();
-//		startSymbol = filteredGrammar.getStartSymbol();
-//		System.out.println("Resulted Grammar ");
-//		for(Nonterminal n : filteredGrammar.getNonterminals()){
-//			System.out.println(n.accept(printer) + " : " + filteredGrammar.getExpression(n).accept(printer));
-//		}
+		sentences = getSentences(filteredGrammar);
+		UCGrammar ucGrammar = new UCGrammar(filteredGrammar, sentences);
+		filteredGrammar = ucGrammar.getOutput();
+		startSymbol = filteredGrammar.getStartSymbol();
+		System.out.println("Resulted Grammar ");
+		for(Nonterminal n : filteredGrammar.getNonterminals()){
+			System.out.println(n.accept(printer) + " : " + filteredGrammar.getExpression(n).accept(printer));
+		}
+		
 		PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar, false);
 		purdom1.phaseOne();
 		Map<Nonterminal, Integer> slen = purdom1.getSlen();

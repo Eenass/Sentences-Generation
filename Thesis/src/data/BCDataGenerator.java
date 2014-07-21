@@ -43,8 +43,8 @@ public class BCDataGenerator {
 			}
 		}
 		boolean bc, uc;
-		bc = true;
-		uc = false;
+		bc = false;
+		uc = true;
 		buffer.append("Grammar\t  N\t  P\t  No.Sen.\t  NC\t  PC\t \n");
 		for(String filePath: inputFiles){
 			System.out.println(filePath.toString());		
@@ -88,6 +88,7 @@ public class BCDataGenerator {
 			
 			Map<Nonterminal, Boolean> covered = purdom3.getCovered();
 			int i = 0;
+			int k = 0;
 			for(Nonterminal n: covered.keySet()){
 				if(prev.containsKey(n)){
 					if(!covered.get(n)){
@@ -106,6 +107,7 @@ public class BCDataGenerator {
 			int j = 0;
 			Set<Expression> productions = new HashSet<Expression>();
 			for(Nonterminal n : mark.keySet()){
+				k += mark.get(n).getProdsMark().size();
 				productions.addAll(mark.get(n).getKeys());
 				for(Expression exp: mark.get(n).getKeys()){
 					if(!mark.get(n).getProdValue(exp)){
@@ -117,7 +119,7 @@ public class BCDataGenerator {
 	
 			Map<Expression, Boolean> productionCoverage = purdom3.getProductionCoverage();
 			System.out.println("number of generated sentences " + reversedOutput.size());
-			System.out.println("covered productions " + productionCoverage.size() + " out of " + productions.size() + " j " + j);
+			System.out.println("covered productions " + productionCoverage.size() + " out of " + productions.size() + " k " + k);
 			System.out.println("Uncovered nonterminals " + i + " " + purdom2.getHasNoPrev()  + " total number of nonterminals " + (prev.size() + 1));
 			int h = 0;
 			for(Expression exp : productions){
@@ -125,7 +127,7 @@ public class BCDataGenerator {
 					h++;
 				}	
 			}
-			NCDataGenerator.reportResults(filePath, grammarSize, productions, reversedOutput, i, h);
+			NCDataGenerator.reportResults(filePath, grammarSize, productions, reversedOutput, i, h, k);
 		}
 		if(bc && uc){
 			NCDataGenerator.printResultsToFile("CDBC_Coverage.txt");

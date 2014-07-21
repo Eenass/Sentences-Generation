@@ -7,6 +7,7 @@ import grammarDatastructure.GrammarMap;
 import grammarDatastructure.Nonterminal;
 import grammarDatastructure.Optional;
 import grammarDatastructure.Plus;
+import grammarDatastructure.ProductionRule;
 import grammarDatastructure.Sequence;
 import grammarDatastructure.Star;
 import grammarDatastructure.Terminal;
@@ -24,6 +25,7 @@ public class UCGrammar implements Visitor<Expression>{
 	private Map<Nonterminal, Expression> temp = new LinkedHashMap<>();
 	private Map<Nonterminal, Expression> newRules = new LinkedHashMap<Nonterminal, Expression>();
 	private Map<Nonterminal, Expression> start = new HashMap<>();
+	private Map<Nonterminal, ProductionRule> rewrittenN = new HashMap<>();
 	private GrammarMap output;
 	int count = 100;
 	
@@ -57,30 +59,36 @@ public class UCGrammar implements Visitor<Expression>{
 
 	@Override
 	public Expression visit(Nonterminal nonterminal) {
-		Nonterminal n = new Nonterminal("nont" + Integer.toString(count));
-		count++;
-		Choice ch = new Choice();
-		ch.addExpr(nonterminal);
-		for(Expression exp : this.sentences.get(nonterminal)){
-			ch.addExpr(exp);
+		if(!rewrittenN.containsKey(nonterminal)){
+			Nonterminal n = new Nonterminal("nont" + Integer.toString(count));
+			count++;
+			Choice ch = new Choice();
+			ch.addExpr(nonterminal);
+			for(Expression exp : this.sentences.get(nonterminal)){
+				ch.addExpr(exp);
+			}
+			newRules.put(n, ch);
+			rewrittenN.put(nonterminal, new ProductionRule(n, ch));
+			return n;
 		}
-		newRules.put(n, ch);
-		return n;
+		else{
+			return rewrittenN.get(nonterminal).getRuleName();
+		}
 	}
 
 	@Override
 	public Expression visit(Optional optional) {
-		return optional.getExpr().accept(this);
+		return new Optional(optional.getExpr().accept(this));
 	}
 
 	@Override
 	public Expression visit(Star star) {
-		return star.getExpr().accept(this);
+		return new Star(star.getExpr().accept(this));
 	}
 
 	@Override
 	public Expression visit(Plus plus) {
-		return plus.getExpr().accept(this);
+		return new Plus(plus.getExpr().accept(this));
 	}
 
 	@Override
