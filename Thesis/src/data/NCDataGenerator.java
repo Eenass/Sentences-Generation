@@ -75,6 +75,11 @@ public class NCDataGenerator {
 			PurdomPhaseOne purdom1 = new PurdomPhaseOne(filteredGrammar, false);
 			purdom1.phaseOne();
 			Map<Nonterminal, Integer> slen = purdom1.getSlen();
+			for(Nonterminal non: slen.keySet()){
+				if(slen.get(non).equals(Integer.MAX_VALUE)){
+					System.out.println(non.getName());
+				}
+			}
 			Map<Nonterminal, ProductionsRLEN> rlen = purdom1.getRlen();
 			Map<Nonterminal, Expression> shortest = purdom1.getShortest();
 

@@ -27,12 +27,20 @@ public class GrammarMap {
 			if(rule.getRuleName().equals(getRoot().ruleName)){
 				if(rule.getExpr().getClass() == Choice.class){
 					Nonterminal newStart = new Nonterminal("start");
+					this.startSymbol.clear();
 					this.startSymbol.put(newStart, rule.getRuleName());
 					putRule(new ProductionRule(newStart, rule.getRuleName()));
 				}
 				else{
+					this.startSymbol.clear();
 					this.startSymbol.put(rule.getRuleName(), rule.getExpr());
 				}				
+			}
+			else if(rule.getExpr().accept(new ContainsStartSymbol(this.startSymbol.keySet().iterator().next()))){
+				Nonterminal newStart = new Nonterminal("start");
+				this.startSymbol.clear();
+				this.startSymbol.put(newStart, getRoot().ruleName);
+				putRule(new ProductionRule(newStart, getRoot().ruleName));
 			}
 			putRule(rule);			
 		}
