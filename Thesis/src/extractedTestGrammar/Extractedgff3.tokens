@@ -1,0 +1,17 @@
+CHAR=8
+COMMENTLINE=5
+EOL=6
+DIGIT=9
+SYMBOL=10
+TEXT=7
+T__1=3
+T__0=4
+T__3=1
+T__2=2
+'0'=9
+';'=4
+'='=3
+'\n'=6
+'a'=8
+'##gff-version 3\n'=2
+'\t'=1
