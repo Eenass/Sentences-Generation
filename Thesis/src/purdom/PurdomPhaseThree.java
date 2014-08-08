@@ -31,6 +31,8 @@ public class PurdomPhaseThree {
 	private Map<Nonterminal, ProductionsMark> mark;
 	private Map<Nonterminal, Integer> onst;
 	private Map<Nonterminal, Boolean> covered;
+	private Map<Expression, Boolean> productionCoverage;
+	private List<List<String>> result = new ArrayList<List<String>>();
 	
 	private final Terminal ready = new Terminal("ready"),
 			unsure = new Terminal("unsure"), finished = new Terminal("finished");
@@ -40,10 +42,8 @@ public class PurdomPhaseThree {
 	protected Nonterminal nt = new Nonterminal("");
 	protected Stack<Expression> stack = new Stack<Expression>();
 	protected List<String> output = new ArrayList<String>();
-	private List<List<String>> result = new ArrayList<List<String>>();
-	protected ASTPrinter printer = new ASTPrinter();
 	protected RepitionCleaner cleaner = new RepitionCleaner();
-	private Map<Expression, Boolean> productionCoverage;
+	
 
 	public PurdomPhaseThree(GrammarMap grammar, Map<Nonterminal, ProductionRule> prev,
 			Map<Nonterminal, Expression> shortest,Map<Nonterminal, ProductionsRLEN> rlen) {
@@ -276,7 +276,6 @@ public class PurdomPhaseThree {
 				filteredOutput.add(l);
 			}
 		}
-		this.result = filteredOutput;
-		
+		this.result = filteredOutput;		
 	}
 }

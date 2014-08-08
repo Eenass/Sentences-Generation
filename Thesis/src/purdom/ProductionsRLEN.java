@@ -1,8 +1,6 @@
 package purdom;
 
 import grammarDatastructure.Expression;
-import grammarDatastructure.Nonterminal;
-import grammarDatastructure.Terminal;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -57,7 +55,7 @@ public class ProductionsRLEN {
 
 	public Map<Expression, Integer> findMin() {
 		Map<Expression, Integer> result = new HashMap<Expression, Integer>();
-//		System.out.println("rlen size " + this.prodsRlen.size());
+
 		Entry<Expression, Integer> currentMin = this.prodsRlen.entrySet().iterator().next();
 		for(Entry<Expression, Integer> entry : this.prodsRlen.entrySet()){
 			int value = entry.getValue();
@@ -69,33 +67,4 @@ public class ProductionsRLEN {
 		return result;
 	}
 	
-//	public void sortByValue() {
-//		Map<Expression, Integer> temp = new LinkedHashMap<>(this.prodsRlen);
-////		System.out.println("befor sorting " + this.getProdsRlen().values());
-//		ValueComparator DESE =  new ValueComparator(temp);
-//		TreeMap<Expression, Integer> sortedMap = new TreeMap<Expression,Integer>(DESE);
-//		sortedMap.putAll(temp);
-//		for(Entry<Expression, Integer> entry: sortedMap.entrySet()){
-//			this.prodsRlen.remove(entry.getKey());
-//			this.prodsRlen.put(entry.getKey(), entry.getValue());
-//		}
-//		System.out.println("after sorting " + this.prodsRlen.values());
-//	}
 }
-
-//class ValueComparator implements Comparator<Expression> {
-//
-//	Map<Expression, Integer> base;
-//	
-//	public ValueComparator(Map<Expression, Integer> base) {
-//    	this.base = base;
-//	}
-//
-//	@Override
-//	public int compare(Expression a, Expression b) {
-//		int j = base.get(a) ;
-//		int k = base.get(b) ;
-//		int i = j >= k ? -1 : 1;
-//		return i;
-//	}
-//}

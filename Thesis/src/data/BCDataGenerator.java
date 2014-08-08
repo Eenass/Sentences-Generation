@@ -43,8 +43,8 @@ public class BCDataGenerator {
 			}
 		}
 		boolean bc, uc;
-		bc = false;
-		uc = true;
+		bc = true;
+		uc = false;
 		buffer.append("Grammar\t  N\t  P\t  No.Sen.\t  NC\t  PC\t \n");
 		for(String filePath: inputFiles){
 			System.out.println(filePath.toString());		
@@ -128,6 +128,11 @@ public class BCDataGenerator {
 				}	
 			}
 			NCDataGenerator.reportResults(filePath, grammarSize, productions, reversedOutput, i, h, k);
+			if(startKey.getName().equals("start")){
+				for(List<String> l:reversedOutput){
+					System.out.println("length " + l.size() + " " + l.toString());
+				}
+			}
 		}
 		if(bc && uc){
 			NCDataGenerator.printResultsToFile("CDBC_Coverage.txt");

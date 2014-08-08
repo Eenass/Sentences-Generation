@@ -6,7 +6,6 @@ import grammarDatastructure.Nonterminal;
 import grammarDatastructure.ProductionRule;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,11 +17,6 @@ public class PurdomPhaseTwo {
 	private Map<Nonterminal, ProductionsRLEN> rlen;	
 	private Map<Nonterminal, Integer> dlen;
 	private Map<Nonterminal, ProductionRule> prev;
-	private int hasNoPrev;
-
-	public int getHasNoPrev() {
-		return hasNoPrev;
-	}
 
 	public PurdomPhaseTwo(Map<Nonterminal, Expression> startSymbol, Map<Nonterminal, Integer> slenNonterminals,
 						Map<Nonterminal, ProductionsRLEN> rlen) {
@@ -31,7 +25,6 @@ public class PurdomPhaseTwo {
 		this.rlen = rlen;
 		this.dlen = new LinkedHashMap<Nonterminal, Integer>();
 		this.prev = new LinkedHashMap<Nonterminal, ProductionRule>();
-		this.hasNoPrev = 0;
 	}
 	
 	public Map<Nonterminal, ProductionRule> getPrev() {
@@ -84,20 +77,5 @@ public class PurdomPhaseTwo {
 				}
 			}
 		}
-		cleanDlenPrev();
 	}
-
-	private void cleanDlenPrev() {
-		Map<Nonterminal, Integer> temp = new HashMap<Nonterminal, Integer>(this.dlen);
-		for(Nonterminal n : temp.keySet()){
-			if(this.dlen.get(n) == maxInt){
-				this.hasNoPrev ++;
-//				this.dlen.remove(n);
-//				this.prev.remove(n);
-			}
-		}
-		
-	}
-
-
 }
