@@ -4,7 +4,6 @@ import grammarDatastructure.Expression;
 import grammarDatastructure.GrammarMap;
 import grammarDatastructure.Nonterminal;
 import grammarDatastructure.ProductionRule;
-import grammarDatastructure.Terminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +33,6 @@ public class NonterminalsSentences {
 	public Map<Nonterminal, List<List<String>>> getOutput() {
 		return output;
 	}
-
-
 
 	private void generateSentences() throws IOException {
 		Map<Nonterminal, Expression> originalStart = this.grammar.getStartSymbol();
@@ -80,14 +77,6 @@ public class NonterminalsSentences {
 			}
 	 
 			this.output.put(entry.getKey(), reversedOutput);
-		}	
-
-//		String folderName = "..\\Thesis\\src\\datawriting\\ncData\\";
-//		for(Nonterminal n : this.output.keySet()){				
-//			DataWriter writer = new DataWriter(this.output.get(n), folderName, n);
-//			writer.writing();
-////			System.out.println(n.getName() + " " + this.output.get(n).size() +  " : " + this.output.get(n).toString());
-//		}
-		
+		}
 	}
 }

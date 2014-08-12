@@ -9,7 +9,9 @@ import grammarDatastructure.ProductionRule;
 import grammarDatastructure.Terminal;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,14 +27,12 @@ import purdom.PurdomPhaseOne;
 import purdom.PurdomPhaseThree;
 import purdom.PurdomPhaseTwo;
 import buildAST.ASTBuilder;
-import buildAST.ASTPrinter;
 
-public class BCDataGenerator {
+public class DataGenerator {
 
 	static StringBuffer buffer = new StringBuffer();
 	
 	public static void main(String[] args) throws IOException {
-		ASTPrinter printer = new ASTPrinter();
 		List<String> inputFiles = new ArrayList<String>();
 		String targetDir = "..\\Thesis\\src\\extractedTestGrammar";
 		File dir = new File(targetDir);
@@ -44,7 +44,7 @@ public class BCDataGenerator {
 		}
 		boolean bc, uc;
 		bc = true;
-		uc = false;
+		uc = true;
 		buffer.append("Grammar\t  N\t  P\t  No.Sen.\t  NC\t  PC\t \n");
 		for(String filePath: inputFiles){
 			System.out.println(filePath.toString());		
@@ -78,7 +78,6 @@ public class BCDataGenerator {
 
 			PurdomPhaseTwo purdom2 = new PurdomPhaseTwo(startSymbol, slen, rlen);
 			purdom2.phaseTwo();
-			Map<Nonterminal, Integer> dlen = purdom2.getDlen();
 			Map<Nonterminal, ProductionRule> prev = purdom2.getPrev();
 				
 			System.out.println("grammar size " + slen.size() + " prev size " + prev.size());
@@ -93,7 +92,6 @@ public class BCDataGenerator {
 				if(prev.containsKey(n)){
 					if(!covered.get(n)){
 						i++;
-//						System.out.println(n.getName() + " " + prev.get(n).getRuleName().getName());
 					}
 				}	
 			}
@@ -104,44 +102,36 @@ public class BCDataGenerator {
 			}
 	 
 			Map<Nonterminal, ProductionsMark> mark = purdom3.getMark();
-			int j = 0;
 			Set<Expression> productions = new HashSet<Expression>();
 			for(Nonterminal n : mark.keySet()){
 				k += mark.get(n).getProdsMark().size();
 				productions.addAll(mark.get(n).getKeys());
-				for(Expression exp: mark.get(n).getKeys()){
-					if(!mark.get(n).getProdValue(exp)){
-						j++;
-	//					System.out.println("Uncovered production " +n.getName() + " " + exp.accept(printer));	
-					}	
-				}
 			}
 	
 			Map<Expression, Boolean> productionCoverage = purdom3.getProductionCoverage();
 			System.out.println("number of generated sentences " + reversedOutput.size());
 			System.out.println("covered productions " + productionCoverage.size() + " out of " + productions.size() + " k " + k);
-			System.out.println("Uncovered nonterminals " + i + " " + purdom2.getHasNoPrev()  + " total number of nonterminals " + (prev.size() + 1));
 			int h = 0;
 			for(Expression exp : productions){
 				if(!productionCoverage.containsKey(exp)){
 					h++;
 				}	
 			}
-			NCDataGenerator.reportResults(filePath, grammarSize, productions, reversedOutput, i, h, k);
-			if(startKey.getName().equals("start")){
-				for(List<String> l:reversedOutput){
-					System.out.println("length " + l.size() + " " + l.toString());
-				}
-			}
+			
+			reportResults(filePath, grammarSize, productions, reversedOutput, i, h, k);
 		}
+		
 		if(bc && uc){
-			NCDataGenerator.printResultsToFile("CDBC_Coverage.txt");
+			printResultsToFile("CDBC_Coverage.txt");
 		}
 		else if(bc){
-			NCDataGenerator.printResultsToFile("BC_Coverage");
+			printResultsToFile("BC_Coverage.txt");
 		}
 		else if(uc){
-			NCDataGenerator.printResultsToFile("UC_Coverage.txt");
+			printResultsToFile("UC_Coverage.txt");
+		}
+		else{
+			printResultsToFile("NC_PC_Coverage.txt");
 		}
 
 	}
@@ -169,6 +159,7 @@ public class BCDataGenerator {
 		}
 		return new Terminal(sb.toString());
 	}
+	
 	static void reportResults(String filePath,
 			int grammarSize, Set<Expression> productions, List<Terminal> ucSentences, int i,
 			int h) {
@@ -176,11 +167,39 @@ public class BCDataGenerator {
 		String fileName = f.getName().replace("Extracted", "");
 		double ncCoverage = (((double)(grammarSize-i))/grammarSize)* 100;
 		double pcCoverage = (((double)(productions.size()-h))/productions.size())* 100;
-		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t \t" + ucSentences.size() + " \t " + ncCoverage+"%" + 
+		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t " + ucSentences.size() + " \t " + ncCoverage+"%" + 
 		" \t " + pcCoverage+"%";
+		buffer.append(s +"\n");
+	
+	}
+	
+	static void printResultsToFile(String name) {
+		File file = new File("..\\Thesis\\src\\testResults\\" + name);
+		FileWriter fw;
+		try {
+			fw = new FileWriter(file, true);
+			PrintWriter printer = new PrintWriter(fw);
+			printer.append(buffer);
+			printer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	static void reportResults(String filePath,
+			int grammarSize, Set<Expression> productions, List<List<String>> output, int i,
+			int h, int k) {
+		File f = new File(filePath);
+		String fileName = f.getName().replace("Extracted", "");
+		double ncCoverage = (((double)(grammarSize-i))/grammarSize)* 100;
+		double pcCoverage = (((double)(productions.size()-h))/productions.size())* 100;
+		String s = fileName + " \t " + grammarSize + " \t " + productions.size() + " \t" + output.size() + " \t " + ncCoverage+"%" + 
+		" \t " + pcCoverage+"% \t " + k;
 		buffer.append(s +"\n");
 		
 	}
+
 
 
 }
