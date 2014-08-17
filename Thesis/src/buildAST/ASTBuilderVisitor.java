@@ -185,6 +185,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else if(ctx.ACTION() != null){
 			Terminal t = new Terminal(ctx.ACTION().getText());
+			this.grammar.addterminal(t);
 			result = new Optional(t);
 		}
 		return result;
@@ -206,7 +207,9 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			result = ctx.notSet().accept(this);
 		}
 		else if(ctx.DOT() != null){
-			result = new Terminal(ctx.DOT().getText());
+			Terminal t = new Terminal(ctx.DOT().getText());
+			result = t;
+			this.grammar.addterminal(t);
 		}
 		return result;
 	}
@@ -241,6 +244,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	@Override
 	public Expression visitRange(RangeContext ctx) {
 		Terminal t1 = new Terminal(ctx.STRING_LITERAL(0).getText());
+		this.grammar.addterminal(t1);
 		return t1;
 	}
 	
@@ -257,6 +261,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else if(ctx.STRING_LITERAL() != null){
 			Terminal t = new Terminal(ctx.STRING_LITERAL().getText());
+			this.grammar.addterminal(t);
 			result = t;
 		}
 		return result;
@@ -287,6 +292,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 	public Expression visitNotSet(NotSetContext ctx) {
 		Sequence sequence = new Sequence();
 		Terminal t = new Terminal(ctx.NOT().getText());
+		this.grammar.addterminal(t);
 		if(ctx.setElement() != null){
 			sequence.addExpr(t);
 			sequence.addExpr(ctx.setElement().accept(this));
@@ -306,6 +312,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		if(ctx.STRING_LITERAL() != null){
 			Terminal t = new Terminal(ctx.STRING_LITERAL().getText());
+			this.grammar.addterminal(t);
 			result = t;
 		}
 		else if(ctx.range() != null){
@@ -314,6 +321,7 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		else if(ctx.LEXER_CHAR_SET() != null){
 			String s = reduceCharSet(ctx.LEXER_CHAR_SET());
 			Terminal t = new Terminal(s);
+			this.grammar.addterminal(t);
 			result = t;
 		}
 		return result;
@@ -323,27 +331,22 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		String text = lexer_CHAR_SET.getText();
 		Pattern p = Pattern.compile("[a-zA-Z]");
 		Matcher m = p.matcher(text);
-		System.out.println("reduceCharSet " + text + text.length());
 		String result = "";
 		if(text.contains("\\u") && text.contains("-")){
 			String[] l = text.split("-", 2);
 			result = "\'" + l[0].substring(1) + "\'";
 		}
 		else if(text.contains("\\u") && text.length() == 8){
-			System.out.println("when one unicode");
 			String[] l = text.split("]", 2);
 			result = "\'" + l[0].substring(1) + "\'";
 		}
 		else if(text.contains("\"\\") && !m.find()){
-			System.out.println("string");
 			result = "\'" + "\"\\\\" + "\'";
 		}
 		else if(text.contains("\'\\") && !m.find()){
-			System.out.println("char");
 			result = "\'" + "\\'\\\\" + "\'";
 		}
 		else if(text.contains("\\")){
-			System.out.println("new line");
 			if(text.contains("\\n")){
 				result = "\'"+  "\\n" + "\'";
 			}
@@ -358,7 +361,6 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 			}
 			else{
 				String[] l = text.split("");
-				System.out.println(l.length);
 				if(l[2].equals("\'")){
 					l[2] = "\\\'";
 				}
@@ -367,10 +369,8 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		}
 		else{
 			String[] l = text.split("");
-			System.out.println(l.length);
 			result = "\'" + l[2] + "\'";
 		}
-		System.out.println("to be returned " + result);
 		return result;
 	}
 
@@ -400,10 +400,12 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			Terminal t = new Terminal(ctx.ASSIGN().getText());
+			this.grammar.addterminal(t);
 			sequence.addExpr(t);
 		}
 		else if(ctx.PLUS_ASSIGN() != null){
 			Terminal t = new Terminal(ctx.PLUS_ASSIGN().getText());
+			this.grammar.addterminal(t);
 			sequence.addExpr(t);
 		}
 		if(ctx.atom() != null){
@@ -539,10 +541,12 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		sequence.addExpr(ctx.id().accept(this));
 		if(ctx.ASSIGN() != null){
 			Terminal t1 = new Terminal(ctx.ASSIGN().getText());
+			this.grammar.addterminal(t1);
 			sequence.addExpr(t1);
 		}
 		else if(ctx.PLUS_ASSIGN() != null){
 			Terminal t2 = new Terminal(ctx.PLUS_ASSIGN().getText());
+			this.grammar.addterminal(t2);
 			sequence.addExpr(t2);
 		}
 		if(ctx.lexerAtom() != null){
@@ -572,10 +576,12 @@ public class ASTBuilderVisitor extends ANTLRv4ParserBaseVisitor<Expression>{
 		else if(ctx.LEXER_CHAR_SET() != null){
 			String s = reduceCharSet(ctx.LEXER_CHAR_SET());
 			Terminal t = new Terminal(s);
+			this.grammar.addterminal(t);
 			result = t;
 		}
 		else if(ctx.DOT() != null){
 			Terminal t = new Terminal(ctx.DOT().getText());
+			this.grammar.addterminal(t);
 			result = t;
 		}
 		return result;

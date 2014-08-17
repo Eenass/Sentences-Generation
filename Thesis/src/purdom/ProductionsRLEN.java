@@ -11,24 +11,21 @@ import java.util.Set;
 
 public class ProductionsRLEN {
 
-	private Expression expr;
-	private boolean bc;
+	private List<Expression> prods;
 	private Map<Expression, Integer> prodsRlen;
 	
-	public ProductionsRLEN(Expression expr, boolean bc) {
-		this.expr = expr;
-		this.bc = bc;
+	public ProductionsRLEN(List<Expression> prods) {
+		this.prods = prods;
 		this.prodsRlen = new LinkedHashMap<Expression, Integer>();
-		findProductions();
+		makeRLEN();
 	}
 
 	public Map<Expression, Integer> getProdsRlen() {
 		return prodsRlen;
 	}
 
-	public void findProductions(){
-		List<Expression> prods = new Productions(expr, this.bc).getProdList();
-		for(Expression e : prods){
+	public void makeRLEN(){
+		for(Expression e: this.prods){
 			this.prodsRlen.put(e, Integer.MAX_VALUE);
 		}
 	}

@@ -1,4 +1,4 @@
-package data;
+package purdom;
 
 import grammarDatastructure.Choice;
 import grammarDatastructure.Empty;

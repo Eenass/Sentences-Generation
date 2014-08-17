@@ -1,4 +1,4 @@
-package data;
+package dataGeneration;
 
 import grammarDatastructure.Choice;
 import grammarDatastructure.Empty;

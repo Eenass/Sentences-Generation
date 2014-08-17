@@ -1,8 +1,9 @@
-package purdom;
+package dataGeneration;
 
 import grammarDatastructure.Choice;
 import grammarDatastructure.Empty;
 import grammarDatastructure.Expression;
+import grammarDatastructure.GrammarMap;
 import grammarDatastructure.Nonterminal;
 import grammarDatastructure.Optional;
 import grammarDatastructure.Plus;
@@ -19,12 +20,15 @@ import java.util.List;
 public class Productions implements Visitor<List<Expression>>{
 
 	private Expression expr;
+	private GrammarMap grammar;
 	private List<Expression> prodList;
-	private boolean bc;
+	private boolean bc, uc;
 	
-	public Productions(Expression expr, boolean bc) {
+	public Productions(Expression expr, GrammarMap grammar, boolean bc, boolean uc) {
 		this.expr = expr;
+		this.grammar = grammar;
 		this.bc = bc;
+		this.uc = uc;
 		this.prodList = this.expr.accept(this);
 	}
 
@@ -35,6 +39,17 @@ public class Productions implements Visitor<List<Expression>>{
 
 	@Override
 	public List<Expression> visit(Nonterminal nonterminal) {
+		if(this.uc){
+			Expression exp = this.grammar.getExpression(nonterminal);
+			List<Expression> result = new ArrayList<Expression>();
+			if(exp.getClass() == Choice.class){
+				result = ((Choice)exp).getChoices();
+			}
+			else{
+				result = new ArrayList<Expression>(Arrays.asList(exp));
+			}
+			return result;
+		}
 		return new ArrayList<Expression>(Arrays.asList(nonterminal));
 	}
 

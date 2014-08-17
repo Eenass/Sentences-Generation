@@ -12,7 +12,9 @@ import grammarDatastructure.Star;
 import grammarDatastructure.Terminal;
 import grammarDatastructure.Visitor;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PurdomPhaseOne implements Visitor<Integer>{
@@ -23,11 +25,9 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 	private Map<Nonterminal, ProductionsRLEN> rlen;
 	private Map<Nonterminal, Expression> shortest;
 	private boolean too_big = false;
-	private boolean bc;
 
-	public PurdomPhaseOne(GrammarMap grammar, boolean bc) {
+	public PurdomPhaseOne(GrammarMap grammar) {
 		this.grammar = grammar;
-		this.bc = bc;
 		this.slen = new LinkedHashMap<Nonterminal, Integer>();
 		this.rlen = new LinkedHashMap<Nonterminal, ProductionsRLEN>();
 		this.shortest = new LinkedHashMap<Nonterminal, Expression>();
@@ -101,7 +101,15 @@ public class PurdomPhaseOne implements Visitor<Integer>{
 		for(Nonterminal n : grammar.getNonterminals()){
 			this.slen.put(n, maxInt);
 			this.shortest.put(n, new Empty());
-			ProductionsRLEN p = new ProductionsRLEN(grammar.getExpression(n), this.bc);
+			Expression expression = this.grammar.getExpression(n);
+			List<Expression> l = new ArrayList<Expression>();
+			if(expression.getClass() == Choice.class){
+				l = ((Choice) expression).getChoices();
+			}
+			else{
+				l.add(expression);
+			}
+			ProductionsRLEN p = new ProductionsRLEN(l);
 			this.rlen.put(n, p);
 		}
 	}

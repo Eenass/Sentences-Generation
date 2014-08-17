@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-import data.RepitionCleaner;
-
 public class PurdomPhaseThree {
 	
 	private GrammarMap grammar;

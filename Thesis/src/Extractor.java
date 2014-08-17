@@ -17,7 +17,7 @@ public class Extractor {
 
 		 ASTPrinter printer = new ASTPrinter();
 		 List<String> inputFiles = new ArrayList<String>();
-		 String targetDir = "..\\Thesis\\src\\testSetGrammar";
+		 String targetDir = "..\\Thesis\\GrammartestSet\\testSetGrammar";
 		 File dir = new File(targetDir);
 		 File[] files = dir.listFiles();
 		 for (File f: files){
@@ -28,9 +28,9 @@ public class Extractor {
 		 for(String filePath: inputFiles){
 			 File f = new File(filePath);
 			 String fileName = f.getName();
-			 f = new File("..\\Thesis\\src\\extractedTestGrammar\\Extracted" + fileName);
+			 f = new File("..\\Thesis\\GrammartestSet\\extractedTestGrammar\\Extracted" + fileName);
 			 f.createNewFile();
-			 PrintWriter writer = new PrintWriter("..\\Thesis\\src\\extractedTestGrammar\\Extracted" + fileName, "UTF-8");
+			 PrintWriter writer = new PrintWriter("..\\Thesis\\GrammartestSet\\extractedTestGrammar\\Extracted" + fileName, "UTF-8");
 			 ASTBuilder astbuilder = new ASTBuilder(filePath);	
 			 Grammar grammar = astbuilder.buildGrammar();
 			 System.out.println("print results");
@@ -40,9 +40,6 @@ public class Extractor {
 				 writer.println("\n"+rule.getRuleName().accept(printer) + "\n\t:\t" + rule.getExpr().accept(printer) + "\n\t;");
 			 }
 			 writer.close();
-//		 for(ProductionRule rule: grammar.getGrammar()){
-//			 System.out.println("\n"+rule.getRuleName().accept(printer) + "\n\t:\t" + rule.getExpr().accept(printer) + "\n\t;");
-//		 }
 		 }	 
 	}	 		
 
